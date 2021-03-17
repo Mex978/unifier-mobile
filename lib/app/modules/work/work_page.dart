@@ -5,12 +5,10 @@ import 'package:unifier_mobile/app/modules/work/widgets/work_chapters/work_chapt
 import 'package:unifier_mobile/app/modules/work/widgets/work_language_selector/work_language_selector.dart';
 import 'package:unifier_mobile/app/shared/models/chapter.dart';
 import 'package:unifier_mobile/app/shared/models/work_result.dart';
-import 'package:unifier_mobile/app/shared/themes/colors.dart';
 import 'package:unifier_mobile/app/shared/utils/enums.dart';
-import 'utils/enums.dart';
-import 'widgets/chapter_item/chapter_item_widget.dart';
-import 'work_controller.dart';
+
 import 'widgets/work_info/work_info_widget.dart';
+import 'work_controller.dart';
 
 class WorkPage extends StatefulWidget {
   const WorkPage({Key? key}) : super(key: key);
