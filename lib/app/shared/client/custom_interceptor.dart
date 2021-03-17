@@ -2,21 +2,22 @@ import 'package:dio/dio.dart';
 
 class CustomInterceptor extends InterceptorsWrapper {
   @override
-  Future onRequest(RequestOptions options) {
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    print('REQUEST[${options.method}] => PATH: ${options.path}');
+    return super.onRequest(options, handler);
+  }
+
+  @override
+  Future onResponse(Response response, ResponseInterceptorHandler handler) {
     print(
-        "REQUEST[${options.method}] => PATH: ${options.baseUrl} ${options.path}");
-    return super.onRequest(options);
+        'RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}');
+    return super.onResponse(response, handler) as Future;
   }
 
   @override
-  Future onResponse(Response response) {
-    print("RESPONSE[${response.statusCode}] => PATH: ${response.request.path}");
-    return super.onResponse(response);
-  }
-
-  @override
-  Future onError(DioError err) {
-    print("ERROR[${err.response?.statusCode}] => PATH: ${err.request?.path}");
-    return super.onError(err);
+  Future onError(DioError err, ErrorInterceptorHandler handler) {
+    print(
+        'ERROR[${err.response?.statusCode}] => PATH: ${err.requestOptions.path}');
+    return super.onError(err, handler) as Future;
   }
 }
