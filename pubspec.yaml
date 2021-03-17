@@ -45,14 +45,9 @@ dependencies:
   photo_view: ^0.11.1
   rx_notifier: ^1.0.0
 dev_dependencies:
-  flutter_native_splash:
   flutter_test:
     sdk: flutter
   mockito: ^5.0.1
-flutter_native_splash:
-  image: assets/icon/icon_transparent.png
-  color: "000000"
-  android_disable_fullscreen: true
   
 
 # For information on the generic Dart part of this file, see the
