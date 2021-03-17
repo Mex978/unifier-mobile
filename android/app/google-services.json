@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "919324793869",
+    "project_id": "unifiermobile-6d420",
+    "storage_bucket": "unifiermobile-6d420.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:919324793869:android:ddbfeb0b83419a6a5bc944",
+        "android_client_info": {
+          "package_name": "com.devloids.unifier_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "919324793869-q7nlm4qt10gnk1ms9fmt55o89e2plolk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWbh0RCND6y9Ex0FrpYstNQH-f537UjDM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "919324793869-q7nlm4qt10gnk1ms9fmt55o89e2plolk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
