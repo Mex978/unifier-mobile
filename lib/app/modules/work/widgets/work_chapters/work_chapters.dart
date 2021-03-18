@@ -23,53 +23,41 @@ class WorkChapters extends StatelessWidget {
     }
 
     return items.isEmpty
-        ? SliverPadding(
-            padding: const EdgeInsets.all(16.0),
-            sliver: SliverToBoxAdapter(
-              child: Center(
-                child: Text(
-                  'Nenhum capítulo encontrado!',
-                  style: TextStyle(
-                    color: Color.fromRGBO(0, 0, 0, 0.56),
-                  ),
-                ),
+        ? Center(
+            child: Text(
+              'Nenhum capítulo encontrado!',
+              style: TextStyle(
+                color: Color.fromRGBO(0, 0, 0, 0.56),
               ),
             ),
           )
-        : SliverPadding(
-            padding: EdgeInsets.only(
-              left: 8,
-              right: 8,
-              top: 8,
-              bottom: 16,
-            ),
-            sliver: SliverGrid(
+        : Expanded(
+            child: GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 6,
                 childAspectRatio: 1.0,
                 mainAxisSpacing: kSpace,
                 crossAxisSpacing: kSpace,
               ),
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  return ChapterItemWidget(
-                    item: items[index],
-                    state: ChapterState.idle,
-                    width: double.infinity,
-                    height: double.infinity,
-                    onTap: () => Modular.to.pushNamed(
-                      route,
-                      arguments: {
-                        'type': type,
-                        'allWork': items,
-                        'index': index,
-                        'chapter': items[index]
-                      },
-                    ),
-                  );
-                },
-                childCount: items.length,
-              ),
+              itemCount: items.length,
+              padding: EdgeInsets.all(8),
+              itemBuilder: (context, index) {
+                return ChapterItemWidget(
+                  item: items[index],
+                  state: ChapterState.idle,
+                  width: double.infinity,
+                  height: double.infinity,
+                  onTap: () => Modular.to.pushNamed(
+                    route,
+                    arguments: {
+                      'type': type,
+                      'allWork': items,
+                      'index': index,
+                      'chapter': items[index]
+                    },
+                  ),
+                );
+              },
             ),
           );
   }

@@ -75,6 +75,7 @@ class _MangaChapterPageState
                                       children: [
                                         Image.network(
                                           imageUrl,
+                                          fit: BoxFit.fitWidth,
                                           loadingBuilder: (context, child,
                                               loadingProgress) {
                                             if (loadingProgress == null)

@@ -46,12 +46,8 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
         },
         physics: AlwaysScrollableScrollPhysics(),
         children: [
-          HomeMangasViewWidget(
-            controller: store,
-          ),
-          HomeNovelsViewWidget(
-            controller: store,
-          ),
+          HomeMangasViewWidget(),
+          HomeNovelsViewWidget(),
         ],
       ),
     );

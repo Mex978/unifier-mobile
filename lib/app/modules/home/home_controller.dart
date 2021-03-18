@@ -13,7 +13,10 @@ import 'repositories/home_repository.dart';
 class HomeController with Disposable {
   late HomeRepository? _repository;
 
-  HomeController(this._repository);
+  HomeController(this._repository) {
+    getMangas();
+    getNovels();
+  }
 
   final searchMangasField = RxNotifier<String>('');
 

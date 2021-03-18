@@ -21,7 +21,7 @@ class AppModule extends Module {
     ModuleRoute(Modular.initialRoute, module: SplashModule()),
     ModuleRoute('/login', module: AuthModule()),
     ModuleRoute('/home', module: HomeModule()),
-    ModuleRoute('/chapters', module: WorkModule()),
+    ModuleRoute('/work', module: WorkModule()),
     ModuleRoute('/manga_chapter', module: MangaChapterModule()),
     ModuleRoute('/novel_chapter', module: NovelChapterModule()),
   ];

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rx_notifier/rx_notifier.dart';
-import 'package:unifier_mobile/app/modules/work/widgets/work_chapters/work_chapters.dart';
-import 'package:unifier_mobile/app/modules/work/widgets/work_language_selector/work_language_selector.dart';
 import 'package:unifier_mobile/app/shared/models/chapter.dart';
 import 'package:unifier_mobile/app/shared/models/work_result.dart';
 import 'package:unifier_mobile/app/shared/utils/enums.dart';
@@ -49,69 +47,71 @@ class _WorkPageState extends ModularState<WorkPage, WorkController> {
               ? store.manga.value.chapters
               : store.novel.value.chapters;
 
-          return CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Informações',
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 22,
-                        ),
-                      ),
-                    ],
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 2.0),
+                  child: WorkInfoWidget(
+                    item: workResult,
+                    space: 12,
                   ),
                 ),
-              ),
-              SliverToBoxAdapter(
-                child: WorkInfoWidget(
-                  item: workResult,
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: SizedBox(height: 16),
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Capítulos',
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 22,
-                        ),
-                      ),
-                    ],
+                Container(
+                  height: 64,
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Modular.to.pushNamed('/work/chapters', arguments: {
+                        'title': workResult?.title ?? '',
+                        'chapters': chapterList,
+                        'type': type,
+                      });
+                    },
+                    child: Text(
+                      'VER CAPÍTULOS',
+                      // style: TextStyle(
+                      //   color: UnifierColors.tertiaryColor,
+                      // ),
+                    ),
                   ),
                 ),
-              ),
-              RxBuilder(
-                builder: (_) {
-                  return WorkLanguageSelector(
-                    currentLanguage: store.currentLanguage.value,
-                    onChaged: store.changeLanguage,
-                    type: type!,
-                  );
-                },
-              ),
-              RxBuilder(builder: (context) {
-                final list = chapterList!
-                    .where((c) => c.language == store.currentLanguage.value)
-                    .toList();
 
-                return WorkChapters(items: list);
-              }),
-            ],
+                // Container(
+                //   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //     children: [
+                //       Text(
+                //         'Capítulos',
+                //         textAlign: TextAlign.start,
+                //         style: TextStyle(
+                //           fontWeight: FontWeight.w400,
+                //           fontSize: 22,
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
+                // RxBuilder(
+                //   builder: (_) {
+                //     return WorkLanguageSelector(
+                //       currentLanguage: store.currentLanguage.value,
+                //       onChaged: store.changeLanguage,
+                //       type: type!,
+                //     );
+                //   },
+                // ),
+                // RxBuilder(builder: (context) {
+                //   final list = chapterList!
+                //       .where((c) => c.language == store.currentLanguage.value)
+                //       .toList();
+
+                //   return WorkChapters(items: list);
+                // })
+              ],
+            ),
           );
         },
       ),

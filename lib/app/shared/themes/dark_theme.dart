@@ -41,6 +41,18 @@ ThemeData darkTheme() {
     radioTheme: RadioThemeData(
       fillColor: MaterialStateProperty.all(accentColor),
     ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        primary: UnifierColors.secondaryColor,
+      ),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        elevation: 4,
+        primary: UnifierColors.secondaryColor,
+        onPrimary: UnifierColors.tertiaryColor,
+      ),
+    ),
     textTheme: TextTheme(
       button: TextStyle(
         fontSize: 16,
