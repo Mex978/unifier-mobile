@@ -17,8 +17,7 @@ class Unifier {
   }
 
   static void hideKeyboard(BuildContext context) {
-    FocusScope.of(context).requestFocus(FocusNode());
-    FocusScope.of(context).unfocus();
+    FocusManager.instance.primaryFocus?.unfocus();
   }
 
   static bool stringSimilarity({required String test, required String target}) {

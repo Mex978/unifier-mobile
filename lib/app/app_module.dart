@@ -18,7 +18,7 @@ class AppModule extends Module {
   final List<ModuleRoute> routes = [
     ModuleRoute(Modular.initialRoute, module: HomeModule()),
     ModuleRoute(
-      '/chapters',
+      '/work',
       module: WorkModule(),
     ),
     ModuleRoute(
