@@ -27,12 +27,17 @@ class NovelChapterController with Disposable {
   }
 
   getChapterContent(Chapter novel) async {
-    state.value = RequestState.LOADING;
+    Unifier.storeMethod(
+      body: () async {
+        state.value = RequestState.LOADING;
 
-    novelChapter.value =
-        await _repository!.fetchNovelChapter(novel.id) ?? NovelChapter();
+        novelChapter.value =
+            await _repository!.fetchNovelChapter(novel.id) ?? NovelChapter();
 
-    state.value = RequestState.SUCCESS;
+        state.value = RequestState.SUCCESS;
+      },
+      resultState: (value) => state.value = value,
+    );
   }
 
   @override

@@ -7,6 +7,7 @@ import 'package:unifier_mobile/app/shared/models/manga.dart';
 import 'package:unifier_mobile/app/shared/models/novel.dart';
 import 'package:unifier_mobile/app/shared/models/work_result.dart';
 import 'package:unifier_mobile/app/shared/utils/enums.dart';
+import 'package:unifier_mobile/app/shared/utils/functions.dart';
 
 class WorkController with Disposable {
   late WorkRepository _repository;
@@ -44,21 +45,33 @@ class WorkController with Disposable {
   }
 
   Future<void> getMangaInfo(WorkResult workResult) async {
-    state.value = RequestState.LOADING;
+    Unifier.storeMethod(
+      body: () async {
+        state.value = RequestState.LOADING;
 
-    manga.value = await _repository.fetchMangaInfo(workResult.id) ?? Manga();
-    setInitialLanguage();
+        manga.value =
+            await _repository.fetchMangaInfo(workResult.id) ?? Manga();
+        setInitialLanguage();
 
-    state.value = RequestState.SUCCESS;
+        state.value = RequestState.SUCCESS;
+      },
+      resultState: (value) => state.value = value,
+    );
   }
 
   Future<void> getNovelInfo(WorkResult workResult) async {
-    state.value = RequestState.LOADING;
+    Unifier.storeMethod(
+      body: () async {
+        state.value = RequestState.LOADING;
 
-    novel.value = await _repository.fetchNovelInfo(workResult.id) ?? Novel();
-    setInitialLanguage();
+        novel.value =
+            await _repository.fetchNovelInfo(workResult.id) ?? Novel();
+        setInitialLanguage();
 
-    state.value = RequestState.SUCCESS;
+        state.value = RequestState.SUCCESS;
+      },
+      resultState: (value) => state.value = value,
+    );
   }
 
   @override

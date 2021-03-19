@@ -21,65 +21,68 @@ class HomeMangasViewWidget extends StatelessWidget {
           duration: Duration(milliseconds: 400),
           curve: Curves.ease,
           alignment: !empty ? Alignment.topCenter : Alignment.center,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8),
-            child: Column(
-              children: [
-                SizedBox(height: 16),
-                empty
-                    ? Container()
-                    : TextField(
-                        decoration: inputDecoration,
-                        textCapitalization: TextCapitalization.words,
-                        onChanged: controller.changeSearchMangasField,
-                      ),
-                empty ? Container() : SizedBox(height: 16),
-                RxBuilder(
-                  builder: (_) {
-                    if (controller.mangaState.value == RequestState.LOADING)
-                      return Expanded(
-                        child: Center(
-                          child: CircularProgressIndicator(),
+          child: RefreshIndicator(
+            onRefresh: () async => controller.getMangas(),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: Column(
+                children: [
+                  SizedBox(height: 16),
+                  empty
+                      ? Container()
+                      : TextField(
+                          decoration: inputDecoration,
+                          textCapitalization: TextCapitalization.words,
+                          onChanged: controller.changeSearchMangasField,
                         ),
-                      );
-
-                    if (empty) {
-                      return Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.all(16),
+                  empty ? Container() : SizedBox(height: 16),
+                  RxBuilder(
+                    builder: (_) {
+                      if (controller.mangaState.value == RequestState.LOADING)
+                        return Expanded(
                           child: Center(
-                            child: Text(
-                              'Nenhum mangá/manhwa/manhua encontrado',
-                              textAlign: TextAlign.center,
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+
+                      if (empty) {
+                        return Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.all(16),
+                            child: Center(
+                              child: Text(
+                                'Nenhum mangá/manhwa/manhua encontrado',
+                                textAlign: TextAlign.center,
+                              ),
                             ),
                           ),
+                        );
+                      }
+
+                      return Expanded(
+                        child: GridView.count(
+                          padding: EdgeInsets.all(8),
+                          crossAxisCount: 3,
+                          childAspectRatio: 7 / 14,
+                          crossAxisSpacing: 8,
+                          children: controller.filteredMangaResults
+                              .map((element) => WorkItemWidget(
+                                    item: element ?? WorkResult(),
+                                    onTap: () => Modular.to.pushNamed(
+                                      '/work',
+                                      arguments: {
+                                        'type': 'manga',
+                                        'item': element ?? WorkResult(),
+                                      },
+                                    ),
+                                  ))
+                              .toList(),
                         ),
                       );
-                    }
-
-                    return Expanded(
-                      child: GridView.count(
-                        padding: EdgeInsets.all(8),
-                        crossAxisCount: 3,
-                        childAspectRatio: 7 / 14,
-                        crossAxisSpacing: 8,
-                        children: controller.filteredMangaResults
-                            .map((element) => WorkItemWidget(
-                                  item: element ?? WorkResult(),
-                                  onTap: () => Modular.to.pushNamed(
-                                    '/work',
-                                    arguments: {
-                                      'type': 'manga',
-                                      'item': element ?? WorkResult(),
-                                    },
-                                  ),
-                                ))
-                            .toList(),
-                      ),
-                    );
-                  },
-                ),
-              ],
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         );

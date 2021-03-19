@@ -11,7 +11,7 @@ import '../../shared/utils/enums.dart';
 import 'repositories/home_repository.dart';
 
 class HomeController with Disposable {
-  late HomeRepository? _repository;
+  late HomeRepository _repository;
 
   HomeController(this._repository) {
     getMangas();
@@ -64,34 +64,39 @@ class HomeController with Disposable {
     searchNovelsField.value = value;
   }
 
-  getMangas({bool showDialog = true}) async {
-    mangaState.value = RequestState.LOADING;
-    final result = await _repository!.fetchMangas();
+  void getMangas({bool showDialog = true}) {
+    Unifier.storeMethod(
+      body: () async {
+        mangaState.value = RequestState.LOADING;
 
-    MangaList? mangaList = result;
-    if (result != null) {
-      mangaList = result;
-    }
+        final result = await _repository.fetchMangas();
 
-    mangaResults.clear();
-    mangaResults.addAll(mangaList!.results!);
+        MangaList mangaList = result ?? MangaList();
 
-    mangaState.value = RequestState.SUCCESS;
+        mangaResults.clear();
+        mangaResults.addAll(mangaList.results!);
+
+        mangaState.value = RequestState.SUCCESS;
+      },
+      resultState: (value) => mangaState.value = value,
+    );
   }
 
-  getNovels({bool showDialog = true}) async {
-    novelState.value = RequestState.LOADING;
-    final result = await _repository!.fetchNovels();
+  void getNovels({bool showDialog = true}) {
+    Unifier.storeMethod(
+      body: () async {
+        novelState.value = RequestState.LOADING;
+        final result = await _repository.fetchNovels();
 
-    NovelList? novelList = result;
-    if (result != null) {
-      novelList = result;
-    }
+        NovelList novelList = result ?? NovelList();
 
-    novelResults.clear();
-    novelResults.addAll(novelList!.results!);
+        novelResults.clear();
+        novelResults.addAll(novelList.results!);
 
-    novelState.value = RequestState.SUCCESS;
+        novelState.value = RequestState.SUCCESS;
+      },
+      resultState: (value) => novelState.value = value,
+    );
   }
 
   void logout() {

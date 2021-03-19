@@ -6,7 +6,7 @@ import 'splash_page.dart';
 class SplashModule extends Module {
   @override
   final List<Bind> binds = [
-    Bind((i) => SplashController(i.get())),
+    Bind((i) => SplashController()),
   ];
 
   @override

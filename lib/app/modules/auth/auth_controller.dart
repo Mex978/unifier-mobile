@@ -2,6 +2,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rx_notifier/rx_notifier.dart';
 import 'package:unifier_mobile/app/app_controller.dart';
 import 'package:unifier_mobile/app/shared/utils/enums.dart';
+import 'package:unifier_mobile/app/shared/utils/functions.dart';
 
 class AuthController extends Disposable {
   final _appController = Modular.get<AppController>();
@@ -10,9 +11,14 @@ class AuthController extends Disposable {
   final stateRegister = RxNotifier<RequestState>(RequestState.IDLE);
 
   void login({required String username, required String password}) {
-    stateLogin.value = RequestState.LOADING;
-    _appController.login(username: username, password: password);
-    stateLogin.value = RequestState.SUCCESS;
+    Unifier.storeMethod(
+      body: () async {
+        stateLogin.value = RequestState.LOADING;
+        await _appController.login(username: username, password: password);
+        stateLogin.value = RequestState.SUCCESS;
+      },
+      resultState: (value) => stateLogin.value = value,
+    );
   }
 
   void register({
@@ -21,10 +27,15 @@ class AuthController extends Disposable {
     required String email,
     required String password,
   }) {
-    stateRegister.value = RequestState.LOADING;
-    _appController.register(
-        username: username, email: email, password: password);
-    stateRegister.value = RequestState.SUCCESS;
+    Unifier.storeMethod(
+      body: () async {
+        stateRegister.value = RequestState.LOADING;
+        _appController.register(
+            username: username, email: email, password: password);
+        stateRegister.value = RequestState.SUCCESS;
+      },
+      resultState: (value) => stateRegister.value = value,
+    );
   }
 
   @override

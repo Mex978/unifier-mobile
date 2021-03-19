@@ -1,9 +1,11 @@
 import 'package:bot_toast/bot_toast.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:unifier_mobile/app/shared/utils/enums.dart';
+import 'package:unifier_mobile/app/shared/utils/error_handle.dart';
 
 class Unifier {
   static Language? numberToLanguage(int? number) {
@@ -85,6 +87,24 @@ class Unifier {
     stringList = aux.split('-');
 
     return aux;
+  }
+
+  static void storeMethod({
+    required Future Function() body,
+    bool showNotification = true,
+    ValueChanged<RequestState>? resultState,
+  }) async {
+    try {
+      await body();
+    } catch (error) {
+      if (error is DioError) {
+        ErrorHandle.handle(error);
+      } else {
+        errorNotification(content: 'Algum erro aconteceu');
+      }
+
+      if (resultState != null) resultState(RequestState.ERROR);
+    }
   }
 
   static void errorNotification({String content = 'Algum erro aconteceu'}) {

@@ -2,16 +2,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rx_notifier/rx_notifier.dart';
 import 'package:unifier_mobile/app/app_controller.dart';
-import 'package:unifier_mobile/app/shared/firebase_repository/firebase_repository.dart';
 import 'package:unifier_mobile/app/shared/utils/enums.dart';
 
 class SplashController with Disposable {
   late RxDisposer disposer;
   final _appController = Modular.get<AppController>();
 
-  final FirebaseRepository _firebase;
-
-  SplashController(this._firebase) {
+  SplashController() {
     init();
     disposer = rxObserver(() {
       if (stateLoadApp.value == RequestState.SUCCESS) {

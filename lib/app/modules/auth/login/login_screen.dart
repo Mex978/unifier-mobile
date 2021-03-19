@@ -83,6 +83,7 @@ class _LoginScreenState extends ModularState<LoginScreen, AuthController> {
                     );
                   },
                 ),
+                SizedBox(height: 8),
                 ElevatedButton(
                   onPressed: () {
                     Modular.to.pushNamed('register');
