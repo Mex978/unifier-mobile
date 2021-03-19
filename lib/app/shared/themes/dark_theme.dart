@@ -36,7 +36,7 @@ ThemeData darkTheme() {
     accentColor: accentColor,
     // scaffoldBackgroundColor: Color.fromRGBO(15, 15, 15, 1),
     buttonTheme: ButtonThemeData(
-      textTheme: ButtonTextTheme.normal,
+      textTheme: ButtonTextTheme.primary,
     ),
     radioTheme: RadioThemeData(
       fillColor: MaterialStateProperty.all(accentColor),
@@ -45,6 +45,34 @@ ThemeData darkTheme() {
       style: TextButton.styleFrom(
         primary: UnifierColors.secondaryColor,
       ),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          width: 0,
+          color: Colors.transparent,
+        ),
+      ),
+      disabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          width: 0,
+          color: Colors.transparent,
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          width: 1,
+          color: UnifierColors.primaryColor,
+        ),
+      ),
+      border: OutlineInputBorder(
+        borderSide: BorderSide(
+          width: 0,
+          color: Colors.transparent,
+        ),
+      ),
+      fillColor: UnifierColors.tertiaryColor,
+      filled: true,
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(

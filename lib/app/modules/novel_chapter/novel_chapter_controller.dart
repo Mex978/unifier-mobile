@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:asuka/asuka.dart' as asuka;
 import 'package:rx_notifier/rx_notifier.dart';
-
 import 'package:unifier_mobile/app/shared/models/chapter.dart';
 import 'package:unifier_mobile/app/shared/models/novel_chapter.dart';
 import 'package:unifier_mobile/app/shared/utils/enums.dart';
 import 'package:unifier_mobile/app/shared/utils/functions.dart';
-import 'package:unifier_mobile/app/shared/widgets/error_dialog/error_dialog_widget.dart';
+
 import 'repositories/novel_chapter_repository.dart';
 
 class NovelChapterController with Disposable {
@@ -29,23 +27,12 @@ class NovelChapterController with Disposable {
   }
 
   getChapterContent(Chapter novel) async {
-    try {
-      state.value = RequestState.LOADING;
+    state.value = RequestState.LOADING;
 
-      novelChapter.value =
-          await _repository!.fetchNovelChapter(novel.id) ?? NovelChapter();
+    novelChapter.value =
+        await _repository!.fetchNovelChapter(novel.id) ?? NovelChapter();
 
-      state.value = RequestState.SUCCESS;
-    } catch (e) {
-      print(e);
-      state.value = RequestState.ERROR;
-      asuka.showDialog(
-        builder: (context) => ErrorDialogWidget(
-          title: 'Error',
-          description: 'Some error occurred! Try again!',
-        ),
-      );
-    }
+    state.value = RequestState.SUCCESS;
   }
 
   @override

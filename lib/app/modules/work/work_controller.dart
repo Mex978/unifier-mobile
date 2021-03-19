@@ -1,5 +1,4 @@
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:asuka/asuka.dart' as asuka;
 import 'package:rx_notifier/rx_notifier.dart';
 
 import 'package:unifier_mobile/app/modules/work/repositories/work_repository.dart';
@@ -8,7 +7,6 @@ import 'package:unifier_mobile/app/shared/models/manga.dart';
 import 'package:unifier_mobile/app/shared/models/novel.dart';
 import 'package:unifier_mobile/app/shared/models/work_result.dart';
 import 'package:unifier_mobile/app/shared/utils/enums.dart';
-import 'package:unifier_mobile/app/shared/widgets/error_dialog/error_dialog_widget.dart';
 
 class WorkController with Disposable {
   late WorkRepository _repository;
@@ -46,41 +44,21 @@ class WorkController with Disposable {
   }
 
   Future<void> getMangaInfo(WorkResult workResult) async {
-    try {
-      state.value = RequestState.LOADING;
+    state.value = RequestState.LOADING;
 
-      manga.value = await _repository.fetchMangaInfo(workResult.id) ?? Manga();
-      setInitialLanguage();
+    manga.value = await _repository.fetchMangaInfo(workResult.id) ?? Manga();
+    setInitialLanguage();
 
-      state.value = RequestState.SUCCESS;
-    } catch (e) {
-      state.value = RequestState.ERROR;
-      asuka.showDialog(
-        builder: (context) => ErrorDialogWidget(
-          title: 'Error',
-          description: 'Some error occurred! Try again!',
-        ),
-      );
-    }
+    state.value = RequestState.SUCCESS;
   }
 
   Future<void> getNovelInfo(WorkResult workResult) async {
-    try {
-      state.value = RequestState.LOADING;
+    state.value = RequestState.LOADING;
 
-      novel.value = await _repository.fetchNovelInfo(workResult.id) ?? Novel();
-      setInitialLanguage();
+    novel.value = await _repository.fetchNovelInfo(workResult.id) ?? Novel();
+    setInitialLanguage();
 
-      state.value = RequestState.SUCCESS;
-    } catch (e) {
-      state.value = RequestState.ERROR;
-      asuka.showDialog(
-        builder: (context) => ErrorDialogWidget(
-          title: 'Error',
-          description: 'Some error occurred! Try again!',
-        ),
-      );
-    }
+    state.value = RequestState.SUCCESS;
   }
 
   @override

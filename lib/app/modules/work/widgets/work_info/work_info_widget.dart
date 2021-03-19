@@ -102,20 +102,22 @@ class WorkInfoWidget extends StatelessWidget {
             ),
           ),
           SizedBox(height: space),
-          Container(
-            padding: EdgeInsets.all(7),
-            decoration: BoxDecoration(
-              color: _containerColor,
-              boxShadow: [_shadow],
-            ),
-            child: field(
-              context,
-              'Sinopse',
-              '${item!.description}',
-              fontSize: 14.0,
-              justify: true,
-            ),
-          ),
+          (item?.description ?? '').isEmpty
+              ? Container()
+              : Container(
+                  padding: EdgeInsets.all(7),
+                  decoration: BoxDecoration(
+                    color: _containerColor,
+                    boxShadow: [_shadow],
+                  ),
+                  child: field(
+                    context,
+                    'Sinopse',
+                    '${item?.description}',
+                    fontSize: 14.0,
+                    justify: true,
+                  ),
+                ),
         ],
       ),
     );

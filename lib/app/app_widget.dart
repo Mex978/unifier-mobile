@@ -1,4 +1,4 @@
-import 'package:asuka/asuka.dart' as asuka;
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -24,7 +24,8 @@ class _AppWidgetState extends State<AppWidget> {
       onTap: () => Unifier.hideKeyboard(context),
       child: MaterialApp(
         title: 'Unifier',
-        builder: asuka.builder,
+        builder: BotToastInit(),
+        navigatorObservers: [BotToastNavigatorObserver()],
         localizationsDelegates: [
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,

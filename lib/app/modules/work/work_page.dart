@@ -69,47 +69,9 @@ class _WorkPageState extends ModularState<WorkPage, WorkController> {
                         'type': type,
                       });
                     },
-                    child: Text(
-                      'VER CAPÍTULOS',
-                      // style: TextStyle(
-                      //   color: UnifierColors.tertiaryColor,
-                      // ),
-                    ),
+                    child: Text('VER CAPÍTULOS'),
                   ),
                 ),
-
-                // Container(
-                //   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //     children: [
-                //       Text(
-                //         'Capítulos',
-                //         textAlign: TextAlign.start,
-                //         style: TextStyle(
-                //           fontWeight: FontWeight.w400,
-                //           fontSize: 22,
-                //         ),
-                //       ),
-                //     ],
-                //   ),
-                // ),
-                // RxBuilder(
-                //   builder: (_) {
-                //     return WorkLanguageSelector(
-                //       currentLanguage: store.currentLanguage.value,
-                //       onChaged: store.changeLanguage,
-                //       type: type!,
-                //     );
-                //   },
-                // ),
-                // RxBuilder(builder: (context) {
-                //   final list = chapterList!
-                //       .where((c) => c.language == store.currentLanguage.value)
-                //       .toList();
-
-                //   return WorkChapters(items: list);
-                // })
               ],
             ),
           );

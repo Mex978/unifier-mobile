@@ -1,3 +1,4 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -84,5 +85,24 @@ class Unifier {
     stringList = aux.split('-');
 
     return aux;
+  }
+
+  static void errorNotification({String content = 'Algum erro aconteceu'}) {
+    BotToast.showSimpleNotification(
+      title: 'Erro',
+      subTitle: content,
+      duration: Duration(seconds: 2, milliseconds: 500),
+      backgroundColor: Colors.red,
+    );
+  }
+
+  static void successNotification(
+      {String content = 'Ação realizada com sucesso'}) {
+    BotToast.showSimpleNotification(
+      title: 'Sucesso',
+      subTitle: content,
+      duration: Duration(seconds: 2, milliseconds: 500),
+      backgroundColor: Colors.green,
+    );
   }
 }

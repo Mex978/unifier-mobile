@@ -1,20 +1,24 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rx_notifier/rx_notifier.dart';
 import 'package:unifier_mobile/app/modules/auth/auth_controller.dart';
-import 'package:unifier_mobile/app/shared/themes/colors.dart';
 import 'package:unifier_mobile/app/shared/utils/enums.dart';
 import 'package:unifier_mobile/app/shared/utils/functions.dart';
 
-class LoginScreen extends StatefulWidget {
+class RegisterScreen extends StatefulWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _RegisterScreenState createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends ModularState<LoginScreen, AuthController> {
+class _RegisterScreenState extends State<RegisterScreen> {
+  final store = Modular.get<AuthController>();
+
   final _formKey = GlobalKey<FormState>();
 
+  final _nameController = TextEditingController();
   final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool visiblePassword = false;
 
@@ -33,19 +37,50 @@ class _LoginScreenState extends ModularState<LoginScreen, AuthController> {
                 Image.asset('assets/image.png'),
                 TextFormField(
                   textInputAction: TextInputAction.next,
-                  controller: _usernameController,
-                  decoration: InputDecoration(labelText: 'Usuário'),
+                  textCapitalization: TextCapitalization.words,
+                  controller: _nameController,
                   validator: (value) {
                     if (value != null && value.isEmpty)
                       return 'Campo necessário';
                   },
+                  decoration: InputDecoration(labelText: 'Nome'),
+                ),
+                SizedBox(height: 16),
+                TextFormField(
+                  textInputAction: TextInputAction.next,
+                  controller: _usernameController,
+                  validator: (value) {
+                    if (value != null && value.isEmpty)
+                      return 'Campo necessário';
+                  },
+                  decoration: InputDecoration(labelText: 'Usuário'),
+                ),
+                SizedBox(height: 16),
+                TextFormField(
+                  textInputAction: TextInputAction.next,
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value == null || value.isEmpty)
+                      return 'Campo necessário';
+
+                    if (!EmailValidator.validate(value))
+                      return 'E-mail inválido';
+                  },
+                  decoration: InputDecoration(
+                    labelText: 'E-mail',
+                  ),
                 ),
                 SizedBox(height: 16),
                 TextFormField(
                   obscureText: !visiblePassword,
                   controller: _passwordController,
+                  validator: (value) {
+                    if (value != null && value.isEmpty)
+                      return 'Campo necessário';
+                  },
                   onFieldSubmitted: (_) {
-                    _login();
+                    _register();
                   },
                   decoration: InputDecoration(
                     labelText: 'Senha',
@@ -64,12 +99,8 @@ class _LoginScreenState extends ModularState<LoginScreen, AuthController> {
                       },
                     ),
                   ),
-                  validator: (value) {
-                    if (value != null && value.isEmpty)
-                      return 'Campo necessário';
-                  },
                 ),
-                SizedBox(height: 40),
+                SizedBox(height: 32),
                 RxBuilder(
                   builder: (context) {
                     if (store.stateLogin.value == RequestState.LOADING) {
@@ -78,20 +109,16 @@ class _LoginScreenState extends ModularState<LoginScreen, AuthController> {
                       );
                     }
                     return ElevatedButton(
-                      onPressed: _login,
-                      child: Text('ENTRAR'),
+                      onPressed: _register,
+                      child: Text('REGISTRAR'),
                     );
                   },
                 ),
-                ElevatedButton(
+                TextButton(
                   onPressed: () {
-                    Modular.to.pushNamed('register');
+                    Modular.to.pop();
                   },
-                  style: ElevatedButton.styleFrom(
-                    primary: UnifierColors.tertiaryColor,
-                    onPrimary: UnifierColors.secondaryColor,
-                  ),
-                  child: Text('CRIAR CONTA'),
+                  child: Text('VOLTAR'),
                 ),
                 SizedBox(height: 16),
               ],
@@ -102,12 +129,14 @@ class _LoginScreenState extends ModularState<LoginScreen, AuthController> {
     );
   }
 
-  void _login() {
+  void _register() {
     Unifier.hideKeyboard(context);
 
     if (_formKey.currentState?.validate() ?? false)
-      store.login(
+      store.register(
+        name: _nameController.text,
         username: _usernameController.text,
+        email: _emailController.text,
         password: _passwordController.text,
       );
   }
