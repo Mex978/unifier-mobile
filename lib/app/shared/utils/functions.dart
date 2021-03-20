@@ -3,7 +3,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:unifier_mobile/app/shared/utils/enums.dart';
 import 'package:unifier_mobile/app/shared/utils/error_handle.dart';
 
@@ -52,14 +51,6 @@ class Unifier {
         visible ? SystemUiOverlay.values : [SystemUiOverlay.bottom]);
   }
 
-  static void toast(BuildContext context, {required String content}) {
-    Fluttertoast.showToast(
-      msg: content,
-      gravity: ToastGravity.BOTTOM,
-      backgroundColor: Colors.black.withOpacity(.64),
-    );
-  }
-
   static String capitalize(String string) {
     return '${string[0].toUpperCase()}${string.substring(1)}';
   }
@@ -105,6 +96,25 @@ class Unifier {
 
       if (resultState != null) resultState(RequestState.ERROR);
     }
+  }
+
+  static void toast({required String content, bool clickClose = false}) {
+    BotToast.showCustomText(
+      align: Alignment.bottomCenter,
+      duration: Duration(seconds: 1, milliseconds: 500),
+      toastBuilder: (cancelFunc) => Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(.36),
+            borderRadius: BorderRadius.circular(64),
+          ),
+          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          child: Text(content),
+        ),
+      ),
+      clickClose: clickClose,
+    );
   }
 
   static void errorNotification({String content = 'Algum erro aconteceu'}) {

@@ -9,7 +9,7 @@ class WorkModule extends Module {
   @override
   final List<Bind> binds = [
     Bind((i) => WorkRepository(i.get())),
-    Bind((i) => WorkController(i.get())),
+    Bind((i) => WorkController(i.get(), i.get())),
   ];
 
   @override

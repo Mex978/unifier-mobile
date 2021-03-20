@@ -1,7 +1,12 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rx_notifier/rx_notifier.dart';
+import 'package:unifier_mobile/app/app_controller.dart';
 
 import 'package:unifier_mobile/app/modules/work/repositories/work_repository.dart';
+import 'package:unifier_mobile/app/shared/firebase_repository/firebase_repository.dart';
 import 'package:unifier_mobile/app/shared/models/chapter.dart';
 import 'package:unifier_mobile/app/shared/models/manga.dart';
 import 'package:unifier_mobile/app/shared/models/novel.dart';
@@ -11,8 +16,13 @@ import 'package:unifier_mobile/app/shared/utils/functions.dart';
 
 class WorkController with Disposable {
   late WorkRepository _repository;
+  late FirebaseRepository _firebase;
 
-  WorkController(this._repository);
+  WorkController(this._repository, this._firebase);
+
+  final _appController = Modular.get<AppController>();
+
+  DocumentReference? workRef;
 
   final currentLanguage = RxNotifier<Language>(Language.NONE);
 
@@ -53,6 +63,21 @@ class WorkController with Disposable {
             await _repository.fetchMangaInfo(workResult.id) ?? Manga();
         setInitialLanguage();
 
+        final token = _appController.token.value;
+
+        workRef = _firebase.instance
+            .collection('users')
+            .doc(token)
+            .collection('mangas')
+            .doc(manga.value.id);
+
+        workRef?.set(
+          {
+            'name': manga.value.title,
+          },
+          SetOptions(merge: true),
+        );
+
         state.value = RequestState.SUCCESS;
       },
       resultState: (value) => state.value = value,
@@ -67,6 +92,21 @@ class WorkController with Disposable {
         novel.value =
             await _repository.fetchNovelInfo(workResult.id) ?? Novel();
         setInitialLanguage();
+
+        final token = _appController.token.value;
+
+        workRef = _firebase.instance
+            .collection('users')
+            .doc(token)
+            .collection('novels')
+            .doc(novel.value.id);
+
+        await workRef?.set(
+          {
+            'name': novel.value.title,
+          },
+          SetOptions(merge: true),
+        );
 
         state.value = RequestState.SUCCESS;
       },
