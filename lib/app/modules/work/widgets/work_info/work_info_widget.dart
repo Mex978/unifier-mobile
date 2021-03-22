@@ -5,8 +5,10 @@ import 'package:unifier_mobile/app/shared/widgets/cover/cover_widget.dart';
 
 class WorkInfoWidget extends StatelessWidget {
   final WorkResult? item;
+  final double space;
 
-  const WorkInfoWidget({Key? key, this.item}) : super(key: key);
+  const WorkInfoWidget({Key? key, this.item, this.space = 16})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,7 @@ class WorkInfoWidget extends StatelessWidget {
             ),
             child: Container(
               color: _containerColor,
-              padding: EdgeInsets.all(7),
+              padding: EdgeInsets.all(8),
               height: imageHeight,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,21 +101,23 @@ class WorkInfoWidget extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 8),
-          Container(
-            padding: EdgeInsets.all(7),
-            decoration: BoxDecoration(
-              color: _containerColor,
-              boxShadow: [_shadow],
-            ),
-            child: field(
-              context,
-              'Sinopse',
-              '${item!.description}',
-              fontSize: 14.0,
-              justify: true,
-            ),
-          ),
+          SizedBox(height: space),
+          (item?.description ?? '').isEmpty
+              ? Container()
+              : Container(
+                  padding: EdgeInsets.all(7),
+                  decoration: BoxDecoration(
+                    color: _containerColor,
+                    boxShadow: [_shadow],
+                  ),
+                  child: field(
+                    context,
+                    'Sinopse',
+                    '${item?.description}',
+                    fontSize: 14.0,
+                    justify: true,
+                  ),
+                ),
         ],
       ),
     );
@@ -122,32 +126,6 @@ class WorkInfoWidget extends StatelessWidget {
   Widget field(BuildContext context, String title, String? content,
       {double fontSize = 11, bool justify = false}) {
     if (content == null) return Container();
-
-    // if (title == 'Autor(es)') {
-    //   final authors = content.split(',');
-
-    //   return DefaultTextStyle(
-    //     style: DefaultTextStyle.of(context).style.copyWith(
-    //           fontSize: fontSize,
-    //         ),
-    //     child: Row(
-    //       crossAxisAlignment: CrossAxisAlignment.start,
-    //       children: [
-    //         Text(
-    //           title + ': ',
-    //           style: TextStyle(
-    //             fontWeight: FontWeight.w600,
-    //           ),
-    //         ),
-    //         Flexible(
-    //           child: Column(
-    //             children: authors.map((author) => Text(author)).toList(),
-    //           ),
-    //         ),
-    //       ],
-    //     ),
-    //   );
-    // }
 
     return RichText(
       textAlign: justify ? TextAlign.justify : TextAlign.start,

@@ -1,4 +1,4 @@
-package com.example.unifier_mobile
+package com.devloids.unifier_mobile
 
 import io.flutter.embedding.android.FlutterActivity
 

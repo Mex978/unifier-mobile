@@ -1,19 +1,24 @@
-import 'package:asuka/asuka.dart' as asuka;
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rx_notifier/rx_notifier.dart';
-
+import 'package:unifier_mobile/app/app_controller.dart';
+import 'package:unifier_mobile/app/shared/local_data/local_data.dart';
 import 'package:unifier_mobile/app/shared/models/manga_list.dart';
 import 'package:unifier_mobile/app/shared/models/novel_list.dart';
 import 'package:unifier_mobile/app/shared/utils/functions.dart';
-import 'package:unifier_mobile/app/shared/widgets/error_dialog/error_dialog_widget.dart';
+
 import '../../shared/models/work_result.dart';
 import '../../shared/utils/enums.dart';
 import 'repositories/home_repository.dart';
 
 class HomeController with Disposable {
-  late HomeRepository? _repository;
+  late HomeRepository _repository;
 
-  HomeController(this._repository);
+  HomeController(this._repository) {
+    getMangas();
+    getNovels(showDialog: false);
+  }
+
+  final _appController = Modular.get<AppController>();
 
   final searchMangasField = RxNotifier<String>('');
 
@@ -59,54 +64,45 @@ class HomeController with Disposable {
     searchNovelsField.value = value;
   }
 
-  getMangas() async {
-    try {
-      mangaState.value = RequestState.LOADING;
-      final result = await _repository!.fetchMangas();
+  void getMangas({bool showDialog = true}) {
+    Unifier.storeMethod(
+      body: () async {
+        mangaState.value = RequestState.LOADING;
 
-      MangaList? mangaList = result;
-      if (result != null) {
-        mangaList = result;
-      }
+        final result = await _repository.fetchMangas();
 
-      mangaResults.clear();
-      mangaResults.addAll(mangaList!.results!);
+        MangaList mangaList = result ?? MangaList();
 
-      mangaState.value = RequestState.SUCCESS;
-    } catch (e) {
-      mangaState.value = RequestState.SUCCESS;
-      asuka.showDialog(
-        builder: (context) => ErrorDialogWidget(
-          title: 'Error',
-          description: 'Some error occurred! Try again!',
-        ),
-      );
-    }
+        mangaResults.clear();
+        mangaResults.addAll(mangaList.results!);
+
+        mangaState.value = RequestState.SUCCESS;
+      },
+      resultState: (value) => mangaState.value = value,
+    );
   }
 
-  getNovels() async {
-    try {
-      novelState.value = RequestState.LOADING;
-      final result = await _repository!.fetchNovels();
+  void getNovels({bool showDialog = true}) {
+    Unifier.storeMethod(
+      body: () async {
+        novelState.value = RequestState.LOADING;
+        final result = await _repository.fetchNovels();
 
-      NovelList? novelList = result;
-      if (result != null) {
-        novelList = result;
-      }
+        NovelList novelList = result ?? NovelList();
 
-      novelResults.clear();
-      novelResults.addAll(novelList!.results!);
+        novelResults.clear();
+        novelResults.addAll(novelList.results!);
 
-      novelState.value = RequestState.SUCCESS;
-    } catch (e) {
-      novelState.value = RequestState.SUCCESS;
-      asuka.showDialog(
-        builder: (context) => ErrorDialogWidget(
-          title: 'Error',
-          description: 'Some error occurred! Try again!',
-        ),
-      );
-    }
+        novelState.value = RequestState.SUCCESS;
+      },
+      resultState: (value) => novelState.value = value,
+    );
+  }
+
+  void logout() {
+    LocalData.saveToken('');
+    _appController.token.value = '';
+    Modular.to.pushReplacementNamed('/login');
   }
 
   @override

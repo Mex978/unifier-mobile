@@ -3,18 +3,24 @@ import 'package:rx_notifier/rx_notifier.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:unifier_mobile/app/modules/work/work_controller.dart';
 import 'package:unifier_mobile/app/shared/models/chapter.dart';
+import 'package:unifier_mobile/app/shared/themes/colors.dart';
 import 'package:unifier_mobile/app/shared/utils/enums.dart';
 import 'package:unifier_mobile/app/shared/utils/extensions.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'language_selector_sliver_app_bar_delegate.dart';
-
 class WorkLanguageSelector extends StatelessWidget {
+  final controller = Modular.get<WorkController>();
   final Language currentLanguage;
   final ValueChanged<Language> onChaged;
   final String type;
 
-  const WorkLanguageSelector({
+  final _shadow = BoxShadow(
+    color: Colors.black.withOpacity(.32),
+    blurRadius: 3,
+    spreadRadius: 3,
+  );
+
+  WorkLanguageSelector({
     Key? key,
     required this.currentLanguage,
     required this.onChaged,
@@ -23,20 +29,6 @@ class WorkLanguageSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverPersistentHeader(
-      pinned: true,
-      floating: false,
-      delegate: SliverAppBarDelegate(
-        minHeight: 50.0,
-        maxHeight: 50.0,
-        child: _languageSelector(context),
-      ),
-    );
-  }
-
-  Widget _languageSelector(BuildContext context) {
-    final controller = Modular.get<WorkController>();
-
     return RxBuilder(
       builder: (_) {
         List<Chapter>? chapterList = type == 'manga'
@@ -44,7 +36,8 @@ class WorkLanguageSelector extends StatelessWidget {
             : controller.novel.value.chapters;
 
         return Container(
-          color: Theme.of(context).scaffoldBackgroundColor,
+          decoration: BoxDecoration(
+              color: UnifierColors.tertiaryColor, boxShadow: [_shadow]),
           child: Row(
             children: Language.values.map((lang) {
               if (lang == Language.NONE) {

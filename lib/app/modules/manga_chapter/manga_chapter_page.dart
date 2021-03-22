@@ -20,17 +20,15 @@ class MangaChapterPage extends StatefulWidget {
 
 class _MangaChapterPageState
     extends ModularState<MangaChapterPage, MangaChapterController> {
-  // final controller = MangaChapterController(Modular.get());
-
   final List<Chapter>? chapterList = Modular.args?.data['allWork'];
 
-  int? index = Modular.args?.data['index'];
-  Chapter? chapter = Modular.args?.data['chapter'];
+  int index = Modular.args?.data['index'] ?? -1;
+  Chapter chapter = Modular.args?.data['chapter'] ?? Chapter();
 
   @override
   void initState() {
     super.initState();
-    store.getChapterContent(chapter!);
+    store.getChapterContent(chapter, chapterList!);
   }
 
   @override
@@ -67,6 +65,7 @@ class _MangaChapterPageState
                       child: InteractiveViewer(
                         maxScale: 5,
                         child: SingleChildScrollView(
+                          controller: store.scrollController,
                           child: Column(
                             children: (store.mangaChapter.value.images
                                     ?.map<Widget>(
@@ -75,6 +74,7 @@ class _MangaChapterPageState
                                       children: [
                                         Image.network(
                                           imageUrl,
+                                          fit: BoxFit.fitWidth,
                                           loadingBuilder: (context, child,
                                               loadingProgress) {
                                             if (loadingProgress == null)
@@ -160,31 +160,29 @@ class _MangaChapterPageState
   }
 
   void nextChapter() {
-    if (index! < (chapterList!.length - 1)) {
+    if (index < (chapterList!.length - 1) && index != -1) {
       setState(() {
-        index = index! + 1;
-        chapter = chapterList![index!];
+        index = index + 1;
+        chapter = chapterList![index];
       });
 
-      store.getChapterContent(chapter!);
+      store.getChapterContent(chapter, chapterList!);
     } else {
       Unifier.toast(
-        context,
         content: 'Esse é o último capítulo disponível',
       );
     }
   }
 
   void previousChapter() {
-    if (index! > 0) {
+    if (index > 0) {
       setState(() {
-        index = index! - 1;
-        chapter = chapterList![index!];
+        index = index - 1;
+        chapter = chapterList![index];
       });
-      store.getChapterContent(chapter!);
+      store.getChapterContent(chapter, chapterList!);
     } else {
       Unifier.toast(
-        context,
         content: 'Esse é o primeiro capítulo disponível',
       );
     }
@@ -192,6 +190,8 @@ class _MangaChapterPageState
 
   @override
   void dispose() {
+    store.scrollController.removeListener(() => store.scrollListener(chapter));
+    store.scrollController.dispose();
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     super.dispose();
   }

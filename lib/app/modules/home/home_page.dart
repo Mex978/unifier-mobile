@@ -3,6 +3,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:unifier_mobile/app/modules/home/widgets/home_mangas_view/home_mangas_view_widget.dart';
 import 'package:unifier_mobile/app/modules/home/widgets/home_novels_view/home_novels_view_widget.dart';
 import 'home_controller.dart';
+import 'widgets/home_drawer/home_drawer_widget.dart';
 
 class HomePage extends StatefulWidget {
   final String title;
@@ -20,8 +21,13 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: HomeDrawerWidget(),
+      appBar: AppBar(
+        title: Text('Unifier'),
+        centerTitle: true,
+      ),
       bottomNavigationBar: BottomNavigationBar(
-        elevation: 50,
+        elevation: 1,
         onTap: (page) => _pageController.animateToPage(
           page,
           duration: Duration(milliseconds: 400),
@@ -46,12 +52,8 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
         },
         physics: AlwaysScrollableScrollPhysics(),
         children: [
-          HomeMangasViewWidget(
-            controller: store,
-          ),
-          HomeNovelsViewWidget(
-            controller: store,
-          ),
+          HomeMangasViewWidget(),
+          HomeNovelsViewWidget(),
         ],
       ),
     );
