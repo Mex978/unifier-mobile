@@ -32,7 +32,7 @@ class _AppWidgetState extends State<AppWidget> {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: [
-          const Locale('pt', 'br'),
+          const Locale('pt', 'BR'),
           const Locale('en', ''), // English, no country code
         ],
         theme: darkTheme(),
