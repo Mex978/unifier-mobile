@@ -33,7 +33,10 @@ class AppController with Disposable {
     token.value = response['token'];
 
     await _firebase
-        .loadUser(username: username, token: token.value, create: create)
+        .loadUser(
+      username: username,
+      token: token.value,
+    )
         .then((doc) {
       user = doc;
       LocalData.saveToken(token.value);
@@ -42,15 +45,32 @@ class AppController with Disposable {
     }).catchError((_) {});
   }
 
-  void register({
+  Future<void> register({
+    required String name,
     required String username,
     required String password,
     required String email,
   }) async {
-    await _repository.createUser(
-        username: username, password: password, email: email);
+    final response = await _repository.createUser(
+      username: username,
+      password: password,
+      email: email,
+    );
 
-    login(username: username, password: password, create: true);
+    token.value = response['token'];
+
+    await _firebase.createUser(
+      data: {
+        "name": name,
+        "username": username,
+      },
+      token: token.value,
+    ).then((doc) {
+      user = doc;
+      LocalData.saveToken(token.value);
+      Modular.to.popUntil((r) => r.isFirst);
+      Modular.to.pushReplacementNamed('/home');
+    }).catchError((_) {});
   }
 
   @override

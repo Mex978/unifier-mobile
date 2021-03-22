@@ -14,7 +14,8 @@ class AuthController extends Disposable {
     Unifier.storeMethod(
       body: () async {
         stateLogin.value = RequestState.LOADING;
-        await _appController.login(username: username, password: password);
+        await _appController.login(
+            username: username.toLowerCase(), password: password);
         stateLogin.value = RequestState.SUCCESS;
       },
       resultState: (value) => stateLogin.value = value,
@@ -30,8 +31,12 @@ class AuthController extends Disposable {
     Unifier.storeMethod(
       body: () async {
         stateRegister.value = RequestState.LOADING;
-        _appController.register(
-            username: username, email: email, password: password);
+        await _appController.register(
+          name: name,
+          username: username.toLowerCase(),
+          email: email.toLowerCase(),
+          password: password,
+        );
         stateRegister.value = RequestState.SUCCESS;
       },
       resultState: (value) => stateRegister.value = value,
