@@ -103,11 +103,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 SizedBox(height: 32),
                 RxBuilder(
                   builder: (context) {
-                    if (store.stateLogin.value == RequestState.LOADING) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
+                    if (store.stateRegister.value == RequestState.LOADING)
+                      return Center(child: CircularProgressIndicator());
+
                     return ElevatedButton(
                       onPressed: _register,
                       child: Text('REGISTRAR'),
