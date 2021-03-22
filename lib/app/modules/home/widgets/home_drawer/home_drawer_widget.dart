@@ -10,8 +10,7 @@ class HomeDrawerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String _username =
-        _appController.user.data()?['username'] ?? 'Usuário';
+    final String _username = _appController.user.data()?['name'] ?? 'Usuário';
 
     return Drawer(
       child: SafeArea(
@@ -22,9 +21,9 @@ class HomeDrawerWidget extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     backgroundColor: UnifierColors.secondaryColor,
-                    maxRadius: 50,
+                    maxRadius: 42,
                     child: CircleAvatar(
-                      maxRadius: 48,
+                      maxRadius: 41,
                       child: Text(_getAvatarContent(_username)),
                     ),
                   ),
@@ -35,6 +34,7 @@ class HomeDrawerWidget extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                   ),
+                  Spacer(),
                 ],
               ),
             ),
