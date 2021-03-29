@@ -33,6 +33,8 @@ class _MangaChapterPageState
 
   @override
   Widget build(BuildContext context) {
+    final _width = MediaQuery.of(context).size.width;
+
     return RxBuilder(
       builder: (_) {
         if (store.state.value == RequestState.LOADING)
@@ -74,25 +76,30 @@ class _MangaChapterPageState
                                       children: [
                                         Image.network(
                                           imageUrl,
+                                          width: _width,
                                           fit: BoxFit.fitWidth,
+                                          cacheWidth: _width.truncate() + 1,
                                           loadingBuilder: (context, child,
                                               loadingProgress) {
                                             if (loadingProgress == null)
                                               return child;
 
-                                            return Padding(
-                                              padding:
-                                                  const EdgeInsets.all(16.0),
-                                              child: CircularProgressIndicator(
-                                                value: loadingProgress
-                                                            .expectedTotalBytes !=
-                                                        null
-                                                    ? loadingProgress
-                                                            .cumulativeBytesLoaded /
-                                                        (loadingProgress
-                                                                .expectedTotalBytes
-                                                            as int)
-                                                    : null,
+                                            return Center(
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(16.0),
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  value: loadingProgress
+                                                              .expectedTotalBytes !=
+                                                          null
+                                                      ? loadingProgress
+                                                              .cumulativeBytesLoaded /
+                                                          (loadingProgress
+                                                                  .expectedTotalBytes
+                                                              as int)
+                                                      : null,
+                                                ),
                                               ),
                                             );
                                           },
