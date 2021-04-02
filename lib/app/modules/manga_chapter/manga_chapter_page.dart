@@ -78,7 +78,6 @@ class _MangaChapterPageState
                                           imageUrl,
                                           width: _width,
                                           fit: BoxFit.fitWidth,
-                                          cacheWidth: _width.truncate() + 1,
                                           loadingBuilder: (context, child,
                                               loadingProgress) {
                                             if (loadingProgress == null)

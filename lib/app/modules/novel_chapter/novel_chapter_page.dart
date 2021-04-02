@@ -20,7 +20,7 @@ class NovelChapterPage extends StatefulWidget {
 
 class _NovelChapterPageState
     extends ModularState<NovelChapterPage, NovelChapterController> {
-  final List<Chapter>? chapterList = Modular.args?.data['allChapters'];
+  final List<Chapter>? chapterList = Modular.args?.data['allWork'];
 
   int index = Modular.args?.data['index'] ?? -1;
   Chapter chapter = Modular.args?.data['chapter'] ?? Chapter();
