@@ -60,6 +60,11 @@ class NovelChapterController with Disposable {
     );
   }
 
+  Future<void> checkReadedChapterStatus() async {
+    final _data = await currentChapterRef?.get();
+    _readed = _data?.data()?['readed'] ?? false;
+  }
+
   getChapterContent(Chapter chapter, List<Chapter> chapterList) async {
     Unifier.storeMethod(
       body: () async {
@@ -70,6 +75,8 @@ class NovelChapterController with Disposable {
 
         currentChapterRef =
             workRef?.collection('chapters').doc(novelChapter.value.id);
+
+        await checkReadedChapterStatus();
 
         final chaptersRef = workRef?.collection('chapters');
 
