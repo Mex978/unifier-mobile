@@ -63,6 +63,7 @@ class _NovelChapterPageState
                             !store.visibleHUDState.value);
                       },
                       child: SingleChildScrollView(
+                        controller: store.scrollController,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Column(

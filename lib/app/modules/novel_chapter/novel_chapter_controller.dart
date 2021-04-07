@@ -34,7 +34,7 @@ class NovelChapterController with Disposable {
 
   scrollListener(Chapter chapter) {
     if (!_readed) {
-      if (scrollController.offset + 340.0 >=
+      if (scrollController.offset >=
               scrollController.position.maxScrollExtent &&
           !scrollController.position.outOfRange) {
         Unifier.toast(content: 'Você chegou ao fim do capítulo');
@@ -112,6 +112,8 @@ class NovelChapterController with Disposable {
             SetOptions(merge: true),
           );
         }
+
+        scrollController.addListener(() => scrollListener(chapter));
 
         state.value = RequestState.SUCCESS;
       },
