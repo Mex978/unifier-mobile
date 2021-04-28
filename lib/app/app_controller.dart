@@ -27,8 +27,7 @@ class AppController with Disposable {
     required String password,
     bool create = false,
   }) async {
-    final response =
-        await _repository.authToken(username: username, password: password);
+    final response = await _repository.authToken(username: username, password: password);
 
     token.value = response['token'];
 
