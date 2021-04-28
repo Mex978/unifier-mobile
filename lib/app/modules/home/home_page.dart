@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:unifier_mobile/app/modules/home/widgets/home_mangas_view/home_mangas_view_widget.dart';
 
 import 'home_controller.dart';
 import 'widgets/home_drawer/home_drawer_widget.dart';
+import 'widgets/home_novels_view/home_novels_view_widget.dart';
 
 class HomePage extends StatefulWidget {
   final String title;
@@ -14,15 +16,16 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final controller = Modular.get<HomeController>();
+  final _pageController = PageController(keepPage: true);
 
   @override
   void initState() {
     super.initState();
-    if (mounted) Modular.to.navigate('mangas');
   }
 
   @override
   void dispose() {
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -36,18 +39,24 @@ class _HomePageState extends State<HomePage> {
         title: Text('Unifier'),
         centerTitle: true,
       ),
-      body: RouterOutlet(),
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() => selectedPage = index);
+        },
+        physics: AlwaysScrollableScrollPhysics(),
+        children: [
+          HomeMangasViewWidget(),
+          HomeNovelsViewWidget(),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         elevation: 1,
-        onTap: (page) {
-          if (page == 0)
-            Modular.to.navigate('mangas');
-          else if (page == 1) Modular.to.navigate('novels');
-
-          setState(() {
-            selectedPage = page;
-          });
-        },
+        onTap: (page) => _pageController.animateToPage(
+          page,
+          duration: Duration(milliseconds: 400),
+          curve: Curves.ease,
+        ),
         currentIndex: selectedPage,
         items: [
           BottomNavigationBarItem(

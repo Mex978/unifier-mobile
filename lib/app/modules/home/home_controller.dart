@@ -1,4 +1,3 @@
-import 'package:flutter/widgets.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rx_notifier/rx_notifier.dart';
 import 'package:unifier_mobile/app/app_controller.dart';
@@ -36,9 +35,6 @@ class HomeController with Disposable {
   final searchView = RxNotifier<bool>(true);
   final directionLocked = RxNotifier<int>(1);
   final lockSearchView = RxNotifier<bool>(false);
-
-  final mangasTextControlelr = TextEditingController();
-  final novelsTextControlelr = TextEditingController();
 
   RxList<WorkResult?> get filteredMangaResults => searchMangasField.value.isEmpty
       ? mangaResults
@@ -131,8 +127,5 @@ class HomeController with Disposable {
   }
 
   @override
-  void dispose() {
-    mangasTextControlelr.dispose();
-    novelsTextControlelr.dispose();
-  }
+  void dispose() {}
 }

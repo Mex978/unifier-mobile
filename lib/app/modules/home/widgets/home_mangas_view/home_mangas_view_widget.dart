@@ -7,8 +7,27 @@ import 'package:unifier_mobile/app/modules/home/widgets/work_item/work_item_widg
 import 'package:unifier_mobile/app/shared/models/work_result.dart';
 import 'package:unifier_mobile/app/shared/utils/enums.dart';
 
-class HomeMangasViewWidget extends StatelessWidget {
+class HomeMangasViewWidget extends StatefulWidget {
+  @override
+  _HomeMangasViewWidgetState createState() => _HomeMangasViewWidgetState();
+}
+
+class _HomeMangasViewWidgetState extends State<HomeMangasViewWidget> {
   final controller = Modular.get<HomeController>();
+  late TextEditingController mangasTextController;
+
+  @override
+  void initState() {
+    super.initState();
+    mangasTextController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.searchMangasField.value = '';
+    mangasTextController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +73,8 @@ class HomeMangasViewWidget extends StatelessWidget {
                                     duration: Duration(milliseconds: 200),
                                     height: controller.searchView.value ? 32 + 62 : 0,
                                     curve: Curves.ease,
-                                    child: Opacity(
+                                    child: AnimatedOpacity(
+                                      duration: Duration(milliseconds: 150),
                                       opacity: controller.searchView.value ? 1 : 0,
                                       child: Column(
                                         children: [
@@ -63,7 +83,7 @@ class HomeMangasViewWidget extends StatelessWidget {
                                             flex: 4,
                                             child: TextField(
                                               decoration: inputDecoration,
-                                              controller: controller.mangasTextControlelr,
+                                              controller: mangasTextController,
                                               textCapitalization: TextCapitalization.words,
                                               onChanged: controller.changeSearchMangasField,
                                             ),

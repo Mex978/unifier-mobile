@@ -7,13 +7,32 @@ import 'package:unifier_mobile/app/shared/models/work_result.dart';
 import '../work_item/work_item_widget.dart';
 import 'package:unifier_mobile/app/shared/utils/enums.dart';
 
-class HomeNovelsViewWidget extends StatelessWidget {
+class HomeNovelsViewWidget extends StatefulWidget {
   const HomeNovelsViewWidget({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final controller = Modular.get<HomeController>();
+  _HomeNovelsViewWidgetState createState() => _HomeNovelsViewWidgetState();
+}
 
+class _HomeNovelsViewWidgetState extends State<HomeNovelsViewWidget> {
+  final controller = Modular.get<HomeController>();
+  late TextEditingController novelsTextController;
+
+  @override
+  void initState() {
+    super.initState();
+    novelsTextController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.searchNovelsField.value = '';
+    novelsTextController.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         body: RxBuilder(
@@ -54,7 +73,8 @@ class HomeNovelsViewWidget extends StatelessWidget {
                                     duration: Duration(milliseconds: 200),
                                     height: controller.searchView.value ? 32 + 62 : 0,
                                     curve: Curves.ease,
-                                    child: Opacity(
+                                    child: AnimatedOpacity(
+                                      duration: Duration(milliseconds: 150),
                                       opacity: controller.searchView.value ? 1 : 0,
                                       child: Column(
                                         children: [
@@ -63,7 +83,7 @@ class HomeNovelsViewWidget extends StatelessWidget {
                                             flex: 4,
                                             child: TextField(
                                               decoration: inputDecoration,
-                                              controller: controller.novelsTextControlelr,
+                                              controller: novelsTextController,
                                               textCapitalization: TextCapitalization.words,
                                               onChanged: controller.changeSearchNovelsField,
                                             ),
