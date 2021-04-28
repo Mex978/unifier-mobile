@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rx_notifier/rx_notifier.dart';
 import 'package:unifier_mobile/app/app_controller.dart';
@@ -32,29 +33,49 @@ class HomeController with Disposable {
 
   final novelResults = RxList<WorkResult>();
 
-  RxList<WorkResult?> get filteredMangaResults =>
-      searchMangasField.value.isEmpty
-          ? mangaResults
-          : mangaResults
-              .where((r) {
-                final similarityResult = Unifier.stringSimilarity(
-                    test: searchMangasField.value, target: r.title!);
-                return similarityResult;
-              })
-              .toList()
-              .asRx();
+  final searchView = RxNotifier<bool>(true);
+  final directionLocked = RxNotifier<int>(1);
+  final lockSearchView = RxNotifier<bool>(false);
 
-  RxList<WorkResult?> get filteredNovelResults =>
-      searchNovelsField.value.isEmpty
-          ? novelResults
-          : novelResults
-              .where((r) {
-                final similarityResult = Unifier.stringSimilarity(
-                    test: searchNovelsField.value, target: r.title!);
-                return similarityResult;
-              })
-              .toList()
-              .asRx();
+  final mangasTextControlelr = TextEditingController();
+  final novelsTextControlelr = TextEditingController();
+
+  RxList<WorkResult?> get filteredMangaResults => searchMangasField.value.isEmpty
+      ? mangaResults
+      : mangaResults
+          .where((r) {
+            final similarityResult = Unifier.stringSimilarity(test: searchMangasField.value, target: r.title!);
+            return similarityResult;
+          })
+          .toList()
+          .asRx();
+
+  RxList<WorkResult?> get filteredNovelResults => searchNovelsField.value.isEmpty
+      ? novelResults
+      : novelResults
+          .where((r) {
+            final similarityResult = Unifier.stringSimilarity(test: searchNovelsField.value, target: r.title!);
+            return similarityResult;
+          })
+          .toList()
+          .asRx();
+
+  void lock(int direction) {
+    if (lockSearchView.value != true && directionLocked.value != 0) {
+      directionLocked.value = direction;
+      lockSearchView.value = true;
+    }
+  }
+
+  void unlock() {
+    lockSearchView.value = false;
+  }
+
+  void changeSearchView(bool newValue, int direction) {
+    if (lockSearchView.value && direction != directionLocked.value) return;
+
+    searchView.value = newValue;
+  }
 
   changeSearchMangasField(String value) {
     searchMangasField.value = value;
@@ -67,7 +88,7 @@ class HomeController with Disposable {
   void getMangas({bool showDialog = true}) {
     Unifier.storeMethod(
       body: () async {
-        mangaState.value = RequestState.LOADING;
+        if (showDialog) mangaState.value = RequestState.LOADING;
 
         final result = await _repository.fetchMangas();
 
@@ -75,6 +96,8 @@ class HomeController with Disposable {
 
         mangaResults.clear();
         mangaResults.addAll(mangaList.results!);
+
+        mangaResults.sort((WorkResult a, WorkResult b) => (a.title ?? '').compareTo(b.title ?? ''));
 
         mangaState.value = RequestState.SUCCESS;
       },
@@ -85,13 +108,15 @@ class HomeController with Disposable {
   void getNovels({bool showDialog = true}) {
     Unifier.storeMethod(
       body: () async {
-        novelState.value = RequestState.LOADING;
+        if (showDialog) novelState.value = RequestState.LOADING;
         final result = await _repository.fetchNovels();
 
         NovelList novelList = result ?? NovelList();
 
         novelResults.clear();
         novelResults.addAll(novelList.results!);
+
+        novelResults.sort((WorkResult a, WorkResult b) => (a.title ?? '').compareTo(b.title ?? ''));
 
         novelState.value = RequestState.SUCCESS;
       },
@@ -106,5 +131,8 @@ class HomeController with Disposable {
   }
 
   @override
-  void dispose() {}
+  void dispose() {
+    mangasTextControlelr.dispose();
+    novelsTextControlelr.dispose();
+  }
 }
