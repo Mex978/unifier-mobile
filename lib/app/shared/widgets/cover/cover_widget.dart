@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:unifier_mobile/app/shared/themes/colors.dart';
 
@@ -6,8 +7,7 @@ class CoverWidget extends StatelessWidget {
   final double height;
   final String coverUrl;
 
-  CoverWidget(
-      {required this.width, required this.height, required this.coverUrl});
+  CoverWidget({required this.width, required this.height, required this.coverUrl});
 
   final kBorderWidth = 1.0;
   final borderRadius = BorderRadius.circular(4);
@@ -51,14 +51,13 @@ class CoverWidget extends StatelessWidget {
                     padding: EdgeInsets.all(kBorderWidth),
                     child: ClipRRect(
                       borderRadius: borderRadius,
-                      child: Image.network(
-                        coverUrl,
+                      child: CachedNetworkImage(
+                        imageUrl: coverUrl,
                         fit: BoxFit.fill,
                         // height: imageHeight,
                         width: width,
                         height: height,
-                        errorBuilder: (context, error, stackTrace) =>
-                            Container(),
+                        errorWidget: (context, error, stackTrace) => Container(),
                       ),
                     ),
                   ),

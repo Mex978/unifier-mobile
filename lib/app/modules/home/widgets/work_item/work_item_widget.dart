@@ -5,11 +5,11 @@ import 'package:unifier_mobile/app/shared/utils/functions.dart';
 import 'package:unifier_mobile/app/shared/widgets/cover/cover_widget.dart';
 
 class WorkItemWidget extends StatefulWidget {
+  final int itemsInPage;
   final WorkResult item;
   final Function onTap;
 
-  const WorkItemWidget({Key? key, required this.item, required this.onTap})
-      : super(key: key);
+  const WorkItemWidget({Key? key, required this.item, required this.onTap, required this.itemsInPage}) : super(key: key);
 
   @override
   _WorkItemWidgetState createState() => _WorkItemWidgetState();
@@ -21,7 +21,7 @@ class _WorkItemWidgetState extends State<WorkItemWidget> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final imageWidth = ((size.width - (32 + 2 * 8)) / 3).truncate().toDouble();
+    final imageWidth = ((size.width - (32 + 2 * 8)) / widget.itemsInPage).truncate().toDouble();
     final imageHeight = (imageWidth / 0.65).truncate().toDouble();
     final fontSize = imageWidth * .10;
 

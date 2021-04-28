@@ -7,13 +7,12 @@ class WorkInfoWidget extends StatelessWidget {
   final WorkResult? item;
   final double space;
 
-  const WorkInfoWidget({Key? key, this.item, this.space = 16})
-      : super(key: key);
+  const WorkInfoWidget({Key? key, this.item, this.space = 16}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final imageWidth = (size.width * .35).truncate().toDouble();
+    final imageWidth = (130).truncate().toDouble();
     final imageHeight = (imageWidth / 0.6).truncate().toDouble();
     final _containerColor = UnifierColors.tertiaryColor;
     final _shadow = BoxShadow(
@@ -123,8 +122,7 @@ class WorkInfoWidget extends StatelessWidget {
     );
   }
 
-  Widget field(BuildContext context, String title, String? content,
-      {double fontSize = 11, bool justify = false}) {
+  Widget field(BuildContext context, String title, String? content, {double fontSize = 11, bool justify = false}) {
     if (content == null) return Container();
 
     return RichText(
