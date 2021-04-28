@@ -33,9 +33,7 @@ class MangaChapterController with Disposable {
 
   scrollListener(Chapter chapter) {
     if (!_readed) {
-      if (scrollController.offset + 340.0 >=
-              scrollController.position.maxScrollExtent &&
-          !scrollController.position.outOfRange) {
+      if (scrollController.offset + 340.0 >= scrollController.position.maxScrollExtent && !scrollController.position.outOfRange) {
         Unifier.toast(content: 'Você chegou ao fim do capítulo');
         _readed = true;
         readChapter(chapter);
@@ -69,11 +67,9 @@ class MangaChapterController with Disposable {
       body: () async {
         state.value = RequestState.LOADING;
 
-        mangaChapter.value =
-            await _repository.fetchMangaChapter(chapter.id) ?? MangaChapter();
+        mangaChapter.value = await _repository.fetchMangaChapter(chapter.id) ?? MangaChapter();
 
-        currentChapterRef =
-            workRef?.collection('chapters').doc(mangaChapter.value.id);
+        currentChapterRef = workRef?.collection('chapters').doc(mangaChapter.value.id);
 
         await checkReadedChapterStatus();
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rx_notifier/rx_notifier.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:unifier_mobile/app/modules/manga_chapter/widgets/manga_page_image.dart';
 import 'package:unifier_mobile/app/shared/models/chapter.dart';
 import 'package:unifier_mobile/app/shared/utils/enums.dart';
 import 'package:unifier_mobile/app/shared/utils/functions.dart';
@@ -11,15 +12,13 @@ import 'widgets/manga_chapter_app_bar.dart';
 
 class MangaChapterPage extends StatefulWidget {
   final String title;
-  const MangaChapterPage({Key? key, this.title = "MangaChapter"})
-      : super(key: key);
+  const MangaChapterPage({Key? key, this.title = "MangaChapter"}) : super(key: key);
 
   @override
   _MangaChapterPageState createState() => _MangaChapterPageState();
 }
 
-class _MangaChapterPageState
-    extends ModularState<MangaChapterPage, MangaChapterController> {
+class _MangaChapterPageState extends ModularState<MangaChapterPage, MangaChapterController> {
   final List<Chapter>? chapterList = Modular.args?.data['allWork'];
 
   int index = Modular.args?.data['index'] ?? -1;
@@ -28,16 +27,14 @@ class _MangaChapterPageState
   @override
   void initState() {
     super.initState();
-    store.getChapterContent(chapter, chapterList!);
+    controller.getChapterContent(chapter, chapterList!);
   }
 
   @override
   Widget build(BuildContext context) {
-    final _width = MediaQuery.of(context).size.width;
-
     return RxBuilder(
       builder: (_) {
-        if (store.state.value == RequestState.LOADING)
+        if (controller.state.value == RequestState.LOADING)
           return Scaffold(
             body: Center(
               child: CircularProgressIndicator(),
@@ -45,13 +42,11 @@ class _MangaChapterPageState
           );
 
         return Scaffold(
-          appBar: store.visibleHUDState.value
-              ? MangaChapterAppBar(controller: store)
-              : null,
+          appBar: controller.visibleHUDState.value ? MangaChapterAppBar(controller: controller) : null,
           body: SafeArea(
             child: RxBuilder(
               builder: (_) {
-                if (store.state.value == RequestState.LOADING)
+                if (controller.state.value == RequestState.LOADING)
                   return Center(
                     child: CircularProgressIndicator(),
                   );
@@ -61,99 +56,23 @@ class _MangaChapterPageState
                   children: [
                     GestureDetector(
                       onTap: () {
-                        store.changeVisibleHUDState(
-                            !store.visibleHUDState.value);
+                        controller.changeVisibleHUDState(!controller.visibleHUDState.value);
                       },
                       child: InteractiveViewer(
                         maxScale: 5,
-                        child: SingleChildScrollView(
-                          controller: store.scrollController,
-                          child: Column(
-                            children: (store.mangaChapter.value.images
-                                    ?.map<Widget>(
-                                  (imageUrl) {
-                                    return Column(
-                                      children: [
-                                        Image.network(
-                                          imageUrl,
-                                          width: _width,
-                                          fit: BoxFit.fitWidth,
-                                          loadingBuilder: (context, child,
-                                              loadingProgress) {
-                                            if (loadingProgress == null)
-                                              return child;
-
-                                            return Center(
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(16.0),
-                                                child:
-                                                    CircularProgressIndicator(
-                                                  value: loadingProgress
-                                                              .expectedTotalBytes !=
-                                                          null
-                                                      ? loadingProgress
-                                                              .cumulativeBytesLoaded /
-                                                          (loadingProgress
-                                                                  .expectedTotalBytes
-                                                              as int)
-                                                      : null,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                          errorBuilder:
-                                              (context, error, stackTrace) {
-                                            return Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Center(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment
-                                                          .stretch,
-                                                  children: [
-                                                    Text(
-                                                      'Error on load image!',
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: TextStyle(
-                                                        fontSize: 12,
-                                                        color: Theme.of(context)
-                                                            .primaryColor,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                        if (imageUrl ==
-                                            store.mangaChapter.value.images
-                                                ?.last)
-                                          SizedBox(
-                                            height: 60,
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                          )
-                                      ],
-                                    );
-                                  },
-                                ).toList() ??
-                                <Widget>[]),
-                          ),
+                        child: ListView.builder(
+                          addAutomaticKeepAlives: true,
+                          controller: controller.scrollController,
+                          itemCount: controller.mangaChapter.value.images?.length ?? 0,
+                          itemBuilder: (context, index) => MangaPageImage(index: index),
                         ),
                       ),
                     ),
                     ChapterBottomNavigationBarWidget(
                       onPreviousButtonPressed: previousChapter,
                       onNextButtonPressed: nextChapter,
-                      visible: store.visibleHUDState.value,
-                      number: store.mangaChapter.value.number ?? -1,
+                      visible: controller.visibleHUDState.value,
+                      number: controller.mangaChapter.value.number ?? -1,
                     ),
                   ],
                 );
@@ -172,7 +91,7 @@ class _MangaChapterPageState
         chapter = chapterList![index];
       });
 
-      store.getChapterContent(chapter, chapterList!);
+      controller.getChapterContent(chapter, chapterList!);
     } else {
       Unifier.toast(
         content: 'Esse é o último capítulo disponível',
@@ -186,7 +105,7 @@ class _MangaChapterPageState
         index = index - 1;
         chapter = chapterList![index];
       });
-      store.getChapterContent(chapter, chapterList!);
+      controller.getChapterContent(chapter, chapterList!);
     } else {
       Unifier.toast(
         content: 'Esse é o primeiro capítulo disponível',
@@ -196,8 +115,8 @@ class _MangaChapterPageState
 
   @override
   void dispose() {
-    store.scrollController.removeListener(() => store.scrollListener(chapter));
-    store.scrollController.dispose();
+    controller.scrollController.removeListener(() => controller.scrollListener(chapter));
+    controller.scrollController.dispose();
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     super.dispose();
   }

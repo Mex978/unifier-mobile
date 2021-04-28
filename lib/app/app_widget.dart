@@ -33,7 +33,6 @@ class _AppWidgetState extends State<AppWidget> {
         ],
         supportedLocales: [
           const Locale('pt', 'BR'),
-          const Locale('en', ''), // English, no country code
         ],
         theme: darkTheme(),
       ).modular(),

@@ -12,7 +12,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final store = Modular.get<AuthController>();
+  final controller = Modular.get<AuthController>();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -40,8 +40,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   textCapitalization: TextCapitalization.words,
                   controller: _nameController,
                   validator: (value) {
-                    if (value != null && value.isEmpty)
-                      return 'Campo necessário';
+                    if (value != null && value.isEmpty) return 'Campo necessário';
                   },
                   decoration: InputDecoration(labelText: 'Nome'),
                 ),
@@ -50,8 +49,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   textInputAction: TextInputAction.next,
                   controller: _usernameController,
                   validator: (value) {
-                    if (value != null && value.isEmpty)
-                      return 'Campo necessário';
+                    if (value != null && value.isEmpty) return 'Campo necessário';
                   },
                   decoration: InputDecoration(labelText: 'Usuário'),
                 ),
@@ -61,11 +59,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
-                    if (value == null || value.isEmpty)
-                      return 'Campo necessário';
+                    if (value == null || value.isEmpty) return 'Campo necessário';
 
-                    if (!EmailValidator.validate(value))
-                      return 'E-mail inválido';
+                    if (!EmailValidator.validate(value)) return 'E-mail inválido';
                   },
                   decoration: InputDecoration(
                     labelText: 'E-mail',
@@ -76,8 +72,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   obscureText: !visiblePassword,
                   controller: _passwordController,
                   validator: (value) {
-                    if (value != null && value.isEmpty)
-                      return 'Campo necessário';
+                    if (value != null && value.isEmpty) return 'Campo necessário';
                   },
                   onFieldSubmitted: (_) {
                     _register();
@@ -88,9 +83,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       highlightColor: Colors.transparent,
                       splashColor: Colors.transparent,
                       icon: Icon(
-                        visiblePassword
-                            ? Icons.remove_red_eye_outlined
-                            : Icons.remove_red_eye_rounded,
+                        visiblePassword ? Icons.remove_red_eye_outlined : Icons.remove_red_eye_rounded,
                       ),
                       onPressed: () {
                         setState(() {
@@ -103,8 +96,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 SizedBox(height: 32),
                 RxBuilder(
                   builder: (context) {
-                    if (store.stateRegister.value == RequestState.LOADING)
-                      return Center(child: CircularProgressIndicator());
+                    if (controller.stateRegister.value == RequestState.LOADING) return Center(child: CircularProgressIndicator());
 
                     return ElevatedButton(
                       onPressed: _register,
@@ -131,7 +123,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     Unifier.hideKeyboard(context);
 
     if (_formKey.currentState?.validate() ?? false)
-      store.register(
+      controller.register(
         name: _nameController.text,
         username: _usernameController.text,
         email: _emailController.text,

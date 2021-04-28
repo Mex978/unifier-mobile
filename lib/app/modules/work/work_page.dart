@@ -27,8 +27,8 @@ class _WorkPageState extends ModularState<WorkPage, WorkController> {
 
   void foo() {
     if (type == 'manga')
-      store.getMangaInfo(workResult ?? WorkResult());
-    else if (type == 'novel') store.getNovelInfo(workResult ?? WorkResult());
+      controller.getMangaInfo(workResult ?? WorkResult());
+    else if (type == 'novel') controller.getNovelInfo(workResult ?? WorkResult());
   }
 
   @override
@@ -39,13 +39,11 @@ class _WorkPageState extends ModularState<WorkPage, WorkController> {
       ),
       body: RxBuilder(
         builder: (_) {
-          if (store.state.value == RequestState.LOADING) {
+          if (controller.state.value == RequestState.LOADING) {
             return Center(child: CircularProgressIndicator());
           }
 
-          List<Chapter>? chapterList = type == 'manga'
-              ? store.manga.value.chapters
-              : store.novel.value.chapters;
+          List<Chapter>? chapterList = type == 'manga' ? controller.manga.value.chapters : controller.novel.value.chapters;
 
           return SingleChildScrollView(
             child: Column(

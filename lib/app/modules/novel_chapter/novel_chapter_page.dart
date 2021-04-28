@@ -11,15 +11,13 @@ import 'novel_chapter_controller.dart';
 
 class NovelChapterPage extends StatefulWidget {
   final String title;
-  const NovelChapterPage({Key? key, this.title = "NovelChapter"})
-      : super(key: key);
+  const NovelChapterPage({Key? key, this.title = "NovelChapter"}) : super(key: key);
 
   @override
   _NovelChapterPageState createState() => _NovelChapterPageState();
 }
 
-class _NovelChapterPageState
-    extends ModularState<NovelChapterPage, NovelChapterController> {
+class _NovelChapterPageState extends ModularState<NovelChapterPage, NovelChapterController> {
   final List<Chapter>? chapterList = Modular.args?.data['allWork'];
 
   int index = Modular.args?.data['index'] ?? -1;
@@ -28,14 +26,14 @@ class _NovelChapterPageState
   @override
   void initState() {
     super.initState();
-    store.getChapterContent(chapter, chapterList!);
+    controller.getChapterContent(chapter, chapterList!);
   }
 
   @override
   Widget build(BuildContext context) {
     return RxBuilder(
       builder: (_) {
-        if (store.state.value == RequestState.LOADING)
+        if (controller.state.value == RequestState.LOADING)
           return Scaffold(
             body: Center(
               child: CircularProgressIndicator(),
@@ -43,13 +41,11 @@ class _NovelChapterPageState
           );
 
         return Scaffold(
-          appBar: store.visibleHUDState.value
-              ? NovelChapterAppBar(controller: store)
-              : null,
+          appBar: controller.visibleHUDState.value ? NovelChapterAppBar(controller: controller) : null,
           body: SafeArea(
             child: RxBuilder(
               builder: (_) {
-                if (store.state.value == RequestState.LOADING)
+                if (controller.state.value == RequestState.LOADING)
                   return Center(
                     child: CircularProgressIndicator(),
                   );
@@ -59,17 +55,16 @@ class _NovelChapterPageState
                   children: [
                     GestureDetector(
                       onTap: () {
-                        store.changeVisibleHUDState(
-                            !store.visibleHUDState.value);
+                        controller.changeVisibleHUDState(!controller.visibleHUDState.value);
                       },
                       child: SingleChildScrollView(
-                        controller: store.scrollController,
+                        controller: controller.scrollController,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Column(
                             children: [
                               Text(
-                                '${store.novelChapter.value.body}',
+                                '${controller.novelChapter.value.body}',
                                 textAlign: TextAlign.justify,
                               ),
                               SizedBox(
@@ -84,8 +79,8 @@ class _NovelChapterPageState
                     ChapterBottomNavigationBarWidget(
                       onPreviousButtonPressed: previousChapter,
                       onNextButtonPressed: nextChapter,
-                      visible: store.visibleHUDState.value,
-                      number: store.novelChapter.value.number ?? -1,
+                      visible: controller.visibleHUDState.value,
+                      number: controller.novelChapter.value.number ?? -1,
                     ),
                   ],
                 );
@@ -104,7 +99,7 @@ class _NovelChapterPageState
         chapter = chapterList![index];
       });
 
-      store.getChapterContent(chapter, chapterList!);
+      controller.getChapterContent(chapter, chapterList!);
     } else {
       Unifier.toast(
         content: 'Esse é o último capítulo disponível',
@@ -118,7 +113,7 @@ class _NovelChapterPageState
         index = index - 1;
         chapter = chapterList![index];
       });
-      store.getChapterContent(chapter, chapterList!);
+      controller.getChapterContent(chapter, chapterList!);
     } else {
       Unifier.toast(
         content: 'Esse é o primeiro capítulo disponível',
@@ -128,8 +123,8 @@ class _NovelChapterPageState
 
   @override
   void dispose() {
-    store.scrollController.removeListener(() => store.scrollListener(chapter));
-    store.scrollController.dispose();
+    controller.scrollController.removeListener(() => controller.scrollListener(chapter));
+    controller.scrollController.dispose();
     Unifier.changeSystemUiHUD(true);
     super.dispose();
   }

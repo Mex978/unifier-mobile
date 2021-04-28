@@ -7,7 +7,7 @@ import 'package:unifier_mobile/app/modules/work/work_controller.dart';
 import 'package:unifier_mobile/app/shared/models/chapter.dart';
 
 class ChaptersPage extends StatelessWidget {
-  final store = Modular.get<WorkController>();
+  final controller = Modular.get<WorkController>();
   final args = Modular.args?.data;
 
   @override
@@ -33,20 +33,16 @@ class ChaptersPage extends StatelessWidget {
             RxBuilder(
               builder: (_) {
                 return WorkLanguageSelector(
-                  currentLanguage: store.currentLanguage.value,
-                  onChaged: store.changeLanguage,
+                  currentLanguage: controller.currentLanguage.value,
+                  onChaged: controller.changeLanguage,
                   type: type,
                 );
               },
             ),
-            SizedBox(
-              height: 8,
-            ),
+            SizedBox(height: 8),
             RxBuilder(
               builder: (context) {
-                final list = chapters
-                    .where((c) => c.language == store.currentLanguage.value)
-                    .toList();
+                final list = chapters.where((c) => c.language == controller.currentLanguage.value).toList();
 
                 return WorkChapters(items: list);
               },

@@ -36,8 +36,7 @@ class _LoginScreenState extends ModularState<LoginScreen, AuthController> {
                   controller: _usernameController,
                   decoration: InputDecoration(labelText: 'Usuário'),
                   validator: (value) {
-                    if (value != null && value.isEmpty)
-                      return 'Campo necessário';
+                    if (value != null && value.isEmpty) return 'Campo necessário';
                   },
                 ),
                 SizedBox(height: 16),
@@ -53,9 +52,7 @@ class _LoginScreenState extends ModularState<LoginScreen, AuthController> {
                       highlightColor: Colors.transparent,
                       splashColor: Colors.transparent,
                       icon: Icon(
-                        visiblePassword
-                            ? Icons.remove_red_eye_outlined
-                            : Icons.remove_red_eye_rounded,
+                        visiblePassword ? Icons.remove_red_eye_outlined : Icons.remove_red_eye_rounded,
                       ),
                       onPressed: () {
                         setState(() {
@@ -65,14 +62,13 @@ class _LoginScreenState extends ModularState<LoginScreen, AuthController> {
                     ),
                   ),
                   validator: (value) {
-                    if (value != null && value.isEmpty)
-                      return 'Campo necessário';
+                    if (value != null && value.isEmpty) return 'Campo necessário';
                   },
                 ),
                 SizedBox(height: 40),
                 RxBuilder(
                   builder: (context) {
-                    if (store.stateLogin.value == RequestState.LOADING) {
+                    if (controller.stateLogin.value == RequestState.LOADING) {
                       return Center(
                         child: CircularProgressIndicator(),
                       );
@@ -107,7 +103,7 @@ class _LoginScreenState extends ModularState<LoginScreen, AuthController> {
     Unifier.hideKeyboard(context);
 
     if (_formKey.currentState?.validate() ?? false)
-      store.login(
+      controller.login(
         username: _usernameController.text,
         password: _passwordController.text,
       );
