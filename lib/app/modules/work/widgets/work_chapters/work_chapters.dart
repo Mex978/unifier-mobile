@@ -1,10 +1,13 @@
+import 'package:auto_animated/auto_animated.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:rx_notifier/rx_notifier.dart';
 import 'package:unifier_mobile/app/modules/work/utils/enums.dart';
 import 'package:unifier_mobile/app/modules/work/widgets/chapter_item/chapter_item_widget.dart';
 import 'package:unifier_mobile/app/modules/work/work_controller.dart';
 import 'package:unifier_mobile/app/shared/models/chapter.dart';
+import 'package:unifier_mobile/app/shared/themes/colors.dart';
 
 class WorkChapters extends StatelessWidget {
   final List<Chapter> items;
@@ -16,8 +19,19 @@ class WorkChapters extends StatelessWidget {
   final String type = Modular.args?.data['type'];
   final kSpace = 4.0;
 
+  final options = LiveOptions(
+    showItemInterval: Duration(milliseconds: 10),
+    showItemDuration: Duration(milliseconds: 250),
+    visibleFraction: 0.05,
+    reAnimateOnVisibility: false,
+  );
+
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    final axisCount = size.width / 60;
+
     String route;
 
     if (type == 'manga') {
@@ -31,62 +45,97 @@ class WorkChapters extends StatelessWidget {
             child: Text(
               'Nenhum capítulo encontrado!',
               style: TextStyle(
-                color: Color.fromRGBO(0, 0, 0, 0.56),
+                color: UnifierColors.secondaryColor,
               ),
             ),
           )
         : Expanded(
-            child: GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 6,
-                childAspectRatio: 1.0,
-                mainAxisSpacing: kSpace,
-                crossAxisSpacing: kSpace,
-              ),
-              itemCount: items.length,
-              padding: EdgeInsets.all(8),
-              itemBuilder: (context, index) {
-                return StreamBuilder<QuerySnapshot>(
-                    stream: _workController.workRef
-                        ?.collection('chapters')
-                        .snapshots(),
-                    builder: (context, snapshot) {
+            child: StreamBuilder<QuerySnapshot>(
+                stream: _workController.workRef?.collection('chapters').snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState != ConnectionState.active) return Center(child: CircularProgressIndicator());
+
+                  Widget buildAnimatedItem(
+                    BuildContext context,
+                    int index,
+                    Animation<double> animation,
+                  ) {
+                    return RxBuilder(builder: (_) {
+                      final _value = Modular.get<WorkController>().sortMode.value;
+
+                      final itemsList = _value == 0 ? items : items.reversed.toList();
+
                       /// 0 - IDLE
                       /// 1 - OPENED
                       /// 2 - READED
                       int state = 0;
 
                       snapshot.data?.docs.asMap().forEach((i, doc) {
-                        if (doc.id == items[index].id) {
+                        if (doc.id == itemsList[index].id) {
                           final _data = doc.data() ?? {};
 
-                          state = _data['opened'] == null ? state : 1;
-                          state = _data['readed'] == null ? state : 2;
+                          final opened = _data['opened'] ?? false;
+                          final readed = _data['readed'] ?? false;
+
+                          if (readed)
+                            state = 2;
+                          else if (opened)
+                            state = 1;
+                          else
+                            state = 0;
                         }
                       });
-                      return ChapterItemWidget(
-                        item: items[index],
-                        state: state == 0
-                            ? ChapterState.idle
-                            : state == 1
-                                ? ChapterState.incomplete
-                                : ChapterState.readed,
-                        width: double.infinity,
-                        height: double.infinity,
-                        onTap: () => Modular.to.pushNamed(
-                          route,
-                          arguments: {
-                            'type': type,
-                            'allWork': items,
-                            'index': index,
-                            'chapter': items[index],
-                            'workRef': _workController.workRef
-                          },
+
+                      return FadeTransition(
+                        opacity: Tween<double>(
+                          begin: 0,
+                          end: 1,
+                        ).animate(animation),
+                        // And slide transition
+                        child: SlideTransition(
+                          position: Tween<Offset>(
+                            begin: Offset(0, -0.1),
+                            end: Offset.zero,
+                          ).animate(animation),
+                          // Paste you Widget
+                          child: ChapterItemWidget(
+                            item: itemsList[index],
+                            state: state == 0
+                                ? ChapterState.idle
+                                : state == 1
+                                    ? ChapterState.incomplete
+                                    : ChapterState.readed,
+                            width: double.infinity,
+                            height: double.infinity,
+                            onTap: () => Modular.to.pushNamed(
+                              route,
+                              arguments: {
+                                'type': type,
+                                'allWork': itemsList,
+                                'index': index,
+                                'chapter': itemsList[index],
+                                'workRef': _workController.workRef,
+                              },
+                            ),
+                          ),
                         ),
                       );
                     });
-              },
-            ),
+                  }
+
+                  return LiveGrid.options(
+                    options: options,
+                    itemBuilder: buildAnimatedItem,
+                    itemCount: items.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: axisCount.truncate(),
+                      childAspectRatio: 1.0,
+                      mainAxisSpacing: kSpace,
+                      crossAxisSpacing: kSpace,
+                    ),
+                    padding: EdgeInsets.all(8),
+                  );
+                }),
           );
   }
 }

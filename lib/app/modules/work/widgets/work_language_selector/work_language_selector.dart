@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:rx_notifier/rx_notifier.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:unifier_mobile/app/modules/work/work_controller.dart';
@@ -31,13 +32,10 @@ class WorkLanguageSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return RxBuilder(
       builder: (_) {
-        List<Chapter>? chapterList = type == 'manga'
-            ? controller.manga.value.chapters
-            : controller.novel.value.chapters;
+        List<Chapter>? chapterList = type == 'manga' ? controller.manga.value.chapters : controller.novel.value.chapters;
 
         return Container(
-          decoration: BoxDecoration(
-              color: UnifierColors.tertiaryColor, boxShadow: [_shadow]),
+          decoration: BoxDecoration(color: UnifierColors.tertiaryColor, boxShadow: [_shadow]),
           child: Row(
             children: Language.values.map((lang) {
               if (lang == Language.NONE) {
@@ -69,7 +67,26 @@ class WorkLanguageSelector extends StatelessWidget {
                   ),
                 ),
               );
-            }).toList(),
+            }).toList()
+              ..addAll([
+                Spacer(),
+                RxBuilder(
+                  builder: (context) {
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(100),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: ClipRRect(
+                          child: IconButton(
+                            icon: Icon(controller.sortMode.value == 0 ? MaterialCommunityIcons.sort_numeric_descending : MaterialCommunityIcons.sort_numeric_ascending),
+                            onPressed: controller.changeSortMode,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ]),
           ),
         );
       },

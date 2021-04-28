@@ -24,6 +24,13 @@ class WorkController with Disposable {
 
   DocumentReference? workRef;
 
+  ///
+  /// Sort mode
+  /// 0 -> asc
+  /// 1 -> desc
+  ///
+  final sortMode = RxNotifier<int>(0);
+
   final currentLanguage = RxNotifier<Language>(Language.NONE);
 
   final manga = RxNotifier<Manga>(Manga());
@@ -54,22 +61,21 @@ class WorkController with Disposable {
     });
   }
 
+  void changeSortMode() {
+    sortMode.value = sortMode.value == 1 ? 0 : 1;
+  }
+
   Future<void> getMangaInfo(WorkResult workResult) async {
     Unifier.storeMethod(
       body: () async {
         state.value = RequestState.LOADING;
 
-        manga.value =
-            await _repository.fetchMangaInfo(workResult.id) ?? Manga();
+        manga.value = await _repository.fetchMangaInfo(workResult.id) ?? Manga();
         setInitialLanguage();
 
         final token = _appController.token.value;
 
-        workRef = _firebase.instance
-            .collection('users')
-            .doc(token)
-            .collection('mangas')
-            .doc(manga.value.id);
+        workRef = _firebase.instance.collection('users').doc(token).collection('mangas').doc(manga.value.id);
 
         workRef?.set(
           {
@@ -89,17 +95,12 @@ class WorkController with Disposable {
       body: () async {
         state.value = RequestState.LOADING;
 
-        novel.value =
-            await _repository.fetchNovelInfo(workResult.id) ?? Novel();
+        novel.value = await _repository.fetchNovelInfo(workResult.id) ?? Novel();
         setInitialLanguage();
 
         final token = _appController.token.value;
 
-        workRef = _firebase.instance
-            .collection('users')
-            .doc(token)
-            .collection('novels')
-            .doc(novel.value.id);
+        workRef = _firebase.instance.collection('users').doc(token).collection('novels').doc(novel.value.id);
 
         await workRef?.set(
           {
