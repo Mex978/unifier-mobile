@@ -62,8 +62,8 @@ class WorkChapters extends StatelessWidget {
                   ) {
                     return RxBuilder(builder: (_) {
                       final _value = Modular.get<WorkController>().sortMode.value;
-
-                      final itemsList = _value == 0 ? items : items.reversed.toList();
+                      final reversed = _value == 1;
+                      final itemsList = reversed ? items.reversed.toList() : items;
 
                       /// 0 - IDLE
                       /// 1 - OPENED
@@ -112,6 +112,7 @@ class WorkChapters extends StatelessWidget {
                               arguments: {
                                 'type': type,
                                 'allWork': itemsList,
+                                'reversed': reversed,
                                 'index': index,
                                 'chapter': itemsList[index],
                                 'workRef': _workController.workRef,

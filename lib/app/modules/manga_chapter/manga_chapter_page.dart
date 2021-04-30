@@ -20,6 +20,7 @@ class MangaChapterPage extends StatefulWidget {
 
 class _MangaChapterPageState extends ModularState<MangaChapterPage, MangaChapterController> {
   final List<Chapter>? chapterList = Modular.args?.data['allWork'];
+  final bool reversed = Modular.args?.data['reversed'];
 
   int index = Modular.args?.data['index'] ?? -1;
   Chapter chapter = Modular.args?.data['chapter'] ?? Chapter();
@@ -85,31 +86,60 @@ class _MangaChapterPageState extends ModularState<MangaChapterPage, MangaChapter
   }
 
   void nextChapter() {
-    if (index < (chapterList!.length - 1) && index != -1) {
-      setState(() {
-        index = index + 1;
-        chapter = chapterList![index];
-      });
-
-      controller.getChapterContent(chapter, chapterList!);
+    if (reversed) {
+      if (index > 0) {
+        setState(() {
+          index = index - 1;
+          chapter = chapterList![index];
+        });
+        controller.getChapterContent(chapter, chapterList!);
+      } else {
+        Unifier.toast(
+          content: 'Esse é o último capítulo disponível',
+        );
+      }
     } else {
-      Unifier.toast(
-        content: 'Esse é o último capítulo disponível',
-      );
+      if (index < (chapterList!.length - 1) && index != -1) {
+        setState(() {
+          index = index + 1;
+          chapter = chapterList![index];
+        });
+
+        controller.getChapterContent(chapter, chapterList!);
+      } else {
+        Unifier.toast(
+          content: 'Esse é o último capítulo disponível',
+        );
+      }
     }
   }
 
   void previousChapter() {
-    if (index > 0) {
-      setState(() {
-        index = index - 1;
-        chapter = chapterList![index];
-      });
-      controller.getChapterContent(chapter, chapterList!);
+    if (reversed) {
+      if (index < (chapterList!.length - 1) && index != -1) {
+        setState(() {
+          index = index + 1;
+          chapter = chapterList![index];
+        });
+
+        controller.getChapterContent(chapter, chapterList!);
+      } else {
+        Unifier.toast(
+          content: 'Esse é o primeiro capítulo disponível',
+        );
+      }
     } else {
-      Unifier.toast(
-        content: 'Esse é o primeiro capítulo disponível',
-      );
+      if (index > 0) {
+        setState(() {
+          index = index - 1;
+          chapter = chapterList![index];
+        });
+        controller.getChapterContent(chapter, chapterList!);
+      } else {
+        Unifier.toast(
+          content: 'Esse é o primeiro capítulo disponível',
+        );
+      }
     }
   }
 
