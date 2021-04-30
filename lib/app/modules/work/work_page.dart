@@ -45,9 +45,9 @@ class _WorkPageState extends ModularState<WorkPage, WorkController> {
 
           List<Chapter>? chapterList = type == 'manga' ? controller.manga.value.chapters : controller.novel.value.chapters;
 
-          return SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+          return RefreshIndicator(
+            onRefresh: () => type == 'manga' ? controller.getMangaInfo(workResult ?? WorkResult()) : controller.getNovelInfo(workResult ?? WorkResult()),
+            child: ListView(
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 2.0),
