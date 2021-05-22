@@ -2,8 +2,8 @@ import 'work_result.dart';
 
 class MangaList {
   int? count;
-  Null next;
-  Null previous;
+  String? next;
+  String? previous;
   List<WorkResult>? results;
 
   MangaList({this.count, this.next, this.previous, this.results});

@@ -84,14 +84,24 @@ class HomeController with Disposable {
   void getMangas({bool showDialog = true}) {
     Unifier.storeMethod(
       body: () async {
+        int page = 1;
+
         if (showDialog) mangaState.value = RequestState.LOADING;
 
-        final result = await _repository.fetchMangas();
+        MangaList? result = await _repository.fetchMangas();
 
         MangaList mangaList = result ?? MangaList();
 
         mangaResults.clear();
-        mangaResults.addAll(mangaList.results!);
+
+        mangaResults.addAll(mangaList.results ?? []);
+
+        while (mangaList.next != null) {
+          page += 1;
+          result = await _repository.fetchMangas(page: page);
+          mangaList = result ?? MangaList();
+          mangaResults.addAll(mangaList.results ?? []);
+        }
 
         mangaResults.sort((WorkResult a, WorkResult b) => (a.title ?? '').compareTo(b.title ?? ''));
 
@@ -104,13 +114,22 @@ class HomeController with Disposable {
   void getNovels({bool showDialog = true}) {
     Unifier.storeMethod(
       body: () async {
+        int page = 1;
+
         if (showDialog) novelState.value = RequestState.LOADING;
-        final result = await _repository.fetchNovels();
+        NovelList? result = await _repository.fetchNovels();
 
         NovelList novelList = result ?? NovelList();
 
         novelResults.clear();
-        novelResults.addAll(novelList.results!);
+        novelResults.addAll(novelList.results ?? []);
+
+        while (novelList.next != null) {
+          page += 1;
+          result = await _repository.fetchNovels(page: page);
+          novelList = result ?? NovelList();
+          mangaResults.addAll(novelList.results ?? []);
+        }
 
         novelResults.sort((WorkResult a, WorkResult b) => (a.title ?? '').compareTo(b.title ?? ''));
 

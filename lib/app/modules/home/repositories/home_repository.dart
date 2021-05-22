@@ -10,8 +10,13 @@ class HomeRepository extends Disposable {
 
   HomeRepository(this.client);
 
-  Future<MangaList?> fetchMangas() async {
-    final Response<dynamic> response = await client.get(MANGAS_LIST);
+  Future<MangaList?> fetchMangas({int page = 1}) async {
+    final Response<dynamic> response = await client.get(
+      MANGAS_LIST,
+      queryParameters: {
+        'page': page,
+      },
+    );
 
     if (response.statusCode == 200) {
       return MangaList.fromJson(response.data);
@@ -20,8 +25,13 @@ class HomeRepository extends Disposable {
     return null;
   }
 
-  Future<NovelList?> fetchNovels() async {
-    final Response<dynamic> response = await client.get(NOVELS_LIST);
+  Future<NovelList?> fetchNovels({int page = 1}) async {
+    final Response<dynamic> response = await client.get(
+      NOVELS_LIST,
+      queryParameters: {
+        'page': page,
+      },
+    );
 
     if (response.statusCode == 200) {
       return NovelList.fromJson(response.data);

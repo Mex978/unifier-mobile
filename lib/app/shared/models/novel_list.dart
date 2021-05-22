@@ -2,8 +2,8 @@ import 'work_result.dart';
 
 class NovelList {
   int? count;
-  Null next;
-  Null previous;
+  String? next;
+  String? previous;
   List<WorkResult>? results;
 
   NovelList({this.count, this.next, this.previous, this.results});
