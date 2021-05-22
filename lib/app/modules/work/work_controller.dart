@@ -35,9 +35,19 @@ class WorkController with Disposable {
 
   final manga = RxNotifier<Manga>(Manga());
 
+  final searchChaptersField = RxNotifier<String>('');
+
   final novel = RxNotifier<Novel>(Novel());
 
   final state = RxNotifier<RequestState>(RequestState.IDLE);
+
+  RxList<Chapter>? get filteredChaptersResult => searchChaptersField.value.isEmpty
+      ? manga.value.chapters?.asRx()
+      : manga.value.chapters?.where((r) => r.number.toString().startsWith(searchChaptersField.value)).toList().asRx();
+
+  void changeSearchChaptersField(String value) {
+    searchChaptersField.value = value;
+  }
 
   void changeLanguage(Language value) {
     currentLanguage.value = value;

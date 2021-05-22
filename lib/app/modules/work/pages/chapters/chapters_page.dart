@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rx_notifier/rx_notifier.dart';
@@ -24,7 +25,12 @@ class ChaptersPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: AutoSizeText(
+          title,
+          maxLines: 2,
+          textAlign: TextAlign.center,
+          maxFontSize: 16,
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -42,7 +48,16 @@ class ChaptersPage extends StatelessWidget {
             SizedBox(height: 8),
             RxBuilder(
               builder: (context) {
-                final list = chapters.where((c) => c.language == controller.currentLanguage.value).toList();
+                if (type == 'manga') {
+                  chapters = [];
+                  controller.filteredChaptersResult?.forEach((v) {
+                    chapters.add(v);
+                  });
+                }
+
+                final list = (type == 'manga' ? controller.filteredChaptersResult?.sublist(0) ?? [] : chapters)
+                    .where((c) => c.language == controller.currentLanguage.value)
+                    .toList();
 
                 return WorkChapters(items: list);
               },

@@ -1,4 +1,3 @@
-import 'package:auto_animated/auto_animated.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -18,13 +17,6 @@ class WorkChapters extends StatelessWidget {
 
   final String type = Modular.args?.data['type'];
   final kSpace = 4.0;
-
-  final options = LiveOptions(
-    showItemInterval: Duration(milliseconds: 10),
-    showItemDuration: Duration(milliseconds: 250),
-    visibleFraction: 0.05,
-    reAnimateOnVisibility: false,
-  );
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +51,6 @@ class WorkChapters extends StatelessWidget {
                   Widget buildAnimatedItem(
                     BuildContext context,
                     int index,
-                    Animation<double> animation,
                   ) {
                     return RxBuilder(builder: (_) {
                       final _value = Modular.get<WorkController>().sortMode.value;
@@ -87,45 +78,30 @@ class WorkChapters extends StatelessWidget {
                         }
                       });
 
-                      return FadeTransition(
-                        opacity: Tween<double>(
-                          begin: 0,
-                          end: 1,
-                        ).animate(animation),
-                        // And slide transition
-                        child: SlideTransition(
-                          position: Tween<Offset>(
-                            begin: Offset(0, -0.1),
-                            end: Offset.zero,
-                          ).animate(animation),
-                          // Paste you Widget
-                          child: ChapterItemWidget(
-                            item: itemsList[index],
-                            state: state == 0
-                                ? ChapterState.idle
-                                : state == 1
-                                    ? ChapterState.incomplete
-                                    : ChapterState.readed,
-                            width: double.infinity,
-                            height: double.infinity,
-                            onTap: () => Modular.to.pushNamed(
-                              route,
-                              arguments: {
-                                'type': type,
-                                'allWork': itemsList,
-                                'index': index,
-                                'chapter': itemsList[index],
-                                'workRef': _workController.workRef,
-                              },
-                            ),
-                          ),
+                      return ChapterItemWidget(
+                        item: itemsList[index],
+                        state: state == 0
+                            ? ChapterState.idle
+                            : state == 1
+                                ? ChapterState.incomplete
+                                : ChapterState.readed,
+                        width: double.infinity,
+                        height: double.infinity,
+                        onTap: () => Modular.to.pushNamed(
+                          route,
+                          arguments: {
+                            'type': type,
+                            'allWork': itemsList,
+                            'index': index,
+                            'chapter': itemsList[index],
+                            'workRef': _workController.workRef,
+                          },
                         ),
                       );
                     });
                   }
 
-                  return LiveGrid.options(
-                    options: options,
+                  return GridView.builder(
                     itemBuilder: buildAnimatedItem,
                     itemCount: items.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
