@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rx_notifier/rx_notifier.dart';
 import 'package:unifier_mobile/app/modules/manga_chapter/repositories/manga_chapter_repository.dart';
+import 'package:unifier_mobile/app/modules/work/work_controller.dart';
 import 'package:unifier_mobile/app/shared/models/chapter.dart';
 import 'package:unifier_mobile/app/shared/models/manga_chapter.dart';
 import 'package:unifier_mobile/app/shared/utils/enums.dart';
@@ -63,9 +64,11 @@ class MangaChapterController with Disposable {
     _readed = _data?.data()?['readed'] ?? false;
   }
 
-  getChapterContent(Chapter chapter, List<Chapter> chapterList) async {
+  getChapterContent(Chapter chapter) async {
     Unifier.storeMethod(
       body: () async {
+        final workController = Modular.get<WorkController>();
+        final chapterList = workController.manga.value.chapters ?? [];
         state.value = RequestState.LOADING;
 
         mangaChapter.value = await _repository.fetchMangaChapter(chapter.id) ?? MangaChapter();

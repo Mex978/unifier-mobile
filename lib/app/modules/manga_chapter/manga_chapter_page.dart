@@ -33,7 +33,7 @@ class _MangaChapterPageState extends ModularState<MangaChapterPage, MangaChapter
   @override
   void initState() {
     super.initState();
-    controller.getChapterContent(chapter, chapterList!);
+    controller.getChapterContent(chapter);
   }
 
   @override
@@ -97,10 +97,10 @@ class _MangaChapterPageState extends ModularState<MangaChapterPage, MangaChapter
         chapter = chapterList![index];
       });
 
-      controller.getChapterContent(chapter, chapterList!);
+      controller.getChapterContent(chapter);
     } else {
       Unifier.toast(
-        content: workController.sortMode.value == 0 ?  lastChapterAvaliable : firstChapterAvaliable,
+        content: workController.sortMode.value == 0 ? lastChapterAvaliable : firstChapterAvaliable,
       );
     }
   }
@@ -111,10 +111,10 @@ class _MangaChapterPageState extends ModularState<MangaChapterPage, MangaChapter
         index = index - 1;
         chapter = chapterList![index];
       });
-      controller.getChapterContent(chapter, chapterList!);
+      controller.getChapterContent(chapter);
     } else {
       Unifier.toast(
-        content:  workController.sortMode.value == 0 ?  firstChapterAvaliable: lastChapterAvaliable,
+        content: workController.sortMode.value == 0 ? firstChapterAvaliable : lastChapterAvaliable,
       );
     }
   }
