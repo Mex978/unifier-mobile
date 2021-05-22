@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rx_notifier/rx_notifier.dart';
+import 'package:unifier_mobile/app/modules/work/work_controller.dart';
 import 'package:unifier_mobile/app/shared/models/chapter.dart';
 import 'package:unifier_mobile/app/shared/models/novel_chapter.dart';
 import 'package:unifier_mobile/app/shared/utils/enums.dart';
@@ -64,9 +65,12 @@ class NovelChapterController with Disposable {
     _readed = _data?.data()?['readed'] ?? false;
   }
 
-  getChapterContent(Chapter chapter, List<Chapter> chapterList) async {
+  getChapterContent(Chapter chapter) async {
     Unifier.storeMethod(
       body: () async {
+        final workController = Modular.get<WorkController>();
+        final chapterList = workController.manga.value.chapters ?? [];
+
         state.value = RequestState.LOADING;
 
         novelChapter.value = await _repository!.fetchNovelChapter(chapter.id) ?? NovelChapter();
