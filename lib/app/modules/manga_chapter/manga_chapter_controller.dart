@@ -33,7 +33,8 @@ class MangaChapterController with Disposable {
 
   scrollListener(Chapter chapter) {
     if (!_readed) {
-      if (scrollController.offset + 340.0 >= scrollController.position.maxScrollExtent && !scrollController.position.outOfRange) {
+      if (scrollController.offset + 340.0 >= scrollController.position.maxScrollExtent &&
+          !scrollController.position.outOfRange) {
         Unifier.toast(content: 'Você chegou ao fim do capítulo');
         _readed = true;
         readChapter(chapter);
@@ -91,7 +92,7 @@ class MangaChapterController with Disposable {
           }
 
           if (previousChapterReference != null) {
-            final previousChapterData = previousChapterReference.data() ?? {};
+            final previousChapterData = previousChapterReference.data();
             if (previousChapterData['readed'] == true) {
               final previousNumber = previousChapterData['number'];
               await currentChapterRef?.set(

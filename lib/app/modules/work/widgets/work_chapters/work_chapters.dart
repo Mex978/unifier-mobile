@@ -53,7 +53,8 @@ class WorkChapters extends StatelessWidget {
             child: StreamBuilder<QuerySnapshot>(
                 stream: _workController.workRef?.collection('chapters').snapshots(),
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState != ConnectionState.active) return Center(child: CircularProgressIndicator());
+                  if (snapshot.connectionState != ConnectionState.active)
+                    return Center(child: CircularProgressIndicator());
 
                   Widget buildAnimatedItem(
                     BuildContext context,
@@ -72,7 +73,7 @@ class WorkChapters extends StatelessWidget {
 
                       snapshot.data?.docs.asMap().forEach((i, doc) {
                         if (doc.id == itemsList[index].id) {
-                          final _data = doc.data() ?? {};
+                          final _data = doc.data();
 
                           final opened = _data['opened'] ?? false;
                           final readed = _data['readed'] ?? false;

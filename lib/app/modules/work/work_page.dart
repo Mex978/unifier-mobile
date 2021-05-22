@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rx_notifier/rx_notifier.dart';
@@ -35,7 +36,12 @@ class _WorkPageState extends ModularState<WorkPage, WorkController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(workResult?.title ?? ''),
+        title: AutoSizeText(
+          workResult?.title ?? '',
+          maxLines: 2,
+          textAlign: TextAlign.center,
+          maxFontSize: 16,
+        ),
       ),
       body: RxBuilder(
         builder: (_) {
@@ -43,7 +49,8 @@ class _WorkPageState extends ModularState<WorkPage, WorkController> {
             return Center(child: CircularProgressIndicator());
           }
 
-          List<Chapter>? chapterList = type == 'manga' ? controller.manga.value.chapters : controller.novel.value.chapters;
+          List<Chapter>? chapterList =
+              type == 'manga' ? controller.manga.value.chapters : controller.novel.value.chapters;
 
           return SingleChildScrollView(
             child: Column(

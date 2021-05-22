@@ -34,8 +34,7 @@ class NovelChapterController with Disposable {
 
   scrollListener(Chapter chapter) {
     if (!_readed) {
-      if (scrollController.offset >=
-              scrollController.position.maxScrollExtent &&
+      if (scrollController.offset >= scrollController.position.maxScrollExtent &&
           !scrollController.position.outOfRange) {
         Unifier.toast(content: 'Você chegou ao fim do capítulo');
         _readed = true;
@@ -70,11 +69,9 @@ class NovelChapterController with Disposable {
       body: () async {
         state.value = RequestState.LOADING;
 
-        novelChapter.value =
-            await _repository!.fetchNovelChapter(chapter.id) ?? NovelChapter();
+        novelChapter.value = await _repository!.fetchNovelChapter(chapter.id) ?? NovelChapter();
 
-        currentChapterRef =
-            workRef?.collection('chapters').doc(novelChapter.value.id);
+        currentChapterRef = workRef?.collection('chapters').doc(novelChapter.value.id);
 
         await checkReadedChapterStatus();
 
@@ -96,7 +93,7 @@ class NovelChapterController with Disposable {
           }
 
           if (previousChapterReference != null) {
-            final previousChapterData = previousChapterReference.data() ?? {};
+            final previousChapterData = previousChapterReference.data();
             if (previousChapterData['readed'] == true) {
               final previousNumber = previousChapterData['number'];
               await currentChapterRef?.set(

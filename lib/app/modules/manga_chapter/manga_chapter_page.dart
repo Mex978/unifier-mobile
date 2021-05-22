@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:rx_notifier/rx_notifier.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:unifier_mobile/app/modules/manga_chapter/widgets/manga_page_image.dart';
+import 'package:unifier_mobile/app/modules/work/work_controller.dart';
 import 'package:unifier_mobile/app/shared/models/chapter.dart';
 import 'package:unifier_mobile/app/shared/utils/enums.dart';
 import 'package:unifier_mobile/app/shared/utils/functions.dart';
@@ -23,6 +24,11 @@ class _MangaChapterPageState extends ModularState<MangaChapterPage, MangaChapter
 
   int index = Modular.args?.data['index'] ?? -1;
   Chapter chapter = Modular.args?.data['chapter'] ?? Chapter();
+
+  final workController = Modular.get<WorkController>();
+
+  final lastChapterAvaliable = 'Esse é o último capítulo disponível';
+  final firstChapterAvaliable = 'Esse é o primeiro capítulo disponível';
 
   @override
   void initState() {
@@ -69,8 +75,8 @@ class _MangaChapterPageState extends ModularState<MangaChapterPage, MangaChapter
                       ),
                     ),
                     ChapterBottomNavigationBarWidget(
-                      onPreviousButtonPressed: previousChapter,
-                      onNextButtonPressed: nextChapter,
+                      onPreviousButtonPressed: workController.sortMode.value == 0 ? previousChapter : nextChapter,
+                      onNextButtonPressed: workController.sortMode.value == 0 ? nextChapter : previousChapter,
                       visible: controller.visibleHUDState.value,
                       number: controller.mangaChapter.value.number ?? -1,
                     ),
@@ -94,7 +100,7 @@ class _MangaChapterPageState extends ModularState<MangaChapterPage, MangaChapter
       controller.getChapterContent(chapter, chapterList!);
     } else {
       Unifier.toast(
-        content: 'Esse é o último capítulo disponível',
+        content: workController.sortMode.value == 0 ?  lastChapterAvaliable : firstChapterAvaliable,
       );
     }
   }
@@ -108,7 +114,7 @@ class _MangaChapterPageState extends ModularState<MangaChapterPage, MangaChapter
       controller.getChapterContent(chapter, chapterList!);
     } else {
       Unifier.toast(
-        content: 'Esse é o primeiro capítulo disponível',
+        content:  workController.sortMode.value == 0 ?  firstChapterAvaliable: lastChapterAvaliable,
       );
     }
   }
