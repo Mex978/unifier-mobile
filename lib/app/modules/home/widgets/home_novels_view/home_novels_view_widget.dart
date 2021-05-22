@@ -35,17 +35,17 @@ class _HomeNovelsViewWidgetState extends State<HomeNovelsViewWidget> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: RxBuilder(
-          builder: (_) {
-            final items = controller.novelResults;
-            final empty = items.isEmpty;
+        body: RefreshIndicator(
+          onRefresh: () async => controller.getNovels(),
+          child: RxBuilder(
+            builder: (_) {
+              final items = controller.novelResults;
+              final empty = items.isEmpty;
 
-            return AnimatedAlign(
-              duration: Duration(milliseconds: 400),
-              curve: Curves.ease,
-              alignment: !empty ? Alignment.topCenter : Alignment.center,
-              child: RefreshIndicator(
-                onRefresh: () async => controller.getNovels(),
+              return AnimatedAlign(
+                duration: Duration(milliseconds: 400),
+                curve: Curves.ease,
+                alignment: !empty ? Alignment.topCenter : Alignment.center,
                 child: OrientationBuilder(
                   builder: (_, orientation) => Padding(
                     padding: EdgeInsets.symmetric(horizontal: 8),
@@ -108,9 +108,20 @@ class _HomeNovelsViewWidgetState extends State<HomeNovelsViewWidget> {
                                   child: Padding(
                                     padding: EdgeInsets.all(16),
                                     child: Center(
-                                      child: Text(
-                                        'Nenhuma novel encontrada',
-                                        textAlign: TextAlign.center,
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            'Nenhuma novel encontrada',
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          SizedBox(height: 16),
+                                          ElevatedButton.icon(
+                                            onPressed: controller.getNovels,
+                                            icon: Icon(Icons.refresh),
+                                            label: Text('Tentar novamente'),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
@@ -147,9 +158,9 @@ class _HomeNovelsViewWidgetState extends State<HomeNovelsViewWidget> {
                     ),
                   ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );

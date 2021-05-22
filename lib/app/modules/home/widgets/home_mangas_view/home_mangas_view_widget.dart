@@ -33,16 +33,16 @@ class _HomeMangasViewWidgetState extends State<HomeMangasViewWidget> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: RxBuilder(builder: (_) {
-          final items = controller.mangaResults;
-          final empty = items.isEmpty;
+        body: RefreshIndicator(
+          onRefresh: () async => controller.getMangas(),
+          child: RxBuilder(builder: (_) {
+            final items = controller.mangaResults;
+            final empty = items.isEmpty;
 
-          return AnimatedAlign(
-            duration: Duration(milliseconds: 400),
-            curve: Curves.ease,
-            alignment: !empty ? Alignment.topCenter : Alignment.center,
-            child: RefreshIndicator(
-              onRefresh: () async => controller.getMangas(),
+            return AnimatedAlign(
+              duration: Duration(milliseconds: 400),
+              curve: Curves.ease,
+              alignment: !empty ? Alignment.topCenter : Alignment.center,
               child: OrientationBuilder(
                 builder: (_, orientation) {
                   if (orientation == Orientation.portrait) controller.changeSearchView(true, 1);
@@ -108,9 +108,20 @@ class _HomeMangasViewWidgetState extends State<HomeMangasViewWidget> {
                                   child: Padding(
                                     padding: EdgeInsets.all(16),
                                     child: Center(
-                                      child: Text(
-                                        'Nenhum mangá/manhwa/manhua encontrado',
-                                        textAlign: TextAlign.center,
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            'Nenhum mangá/manhwa/manhua encontrado',
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          SizedBox(height: 16),
+                                          ElevatedButton.icon(
+                                            onPressed: controller.getMangas,
+                                            icon: Icon(Icons.refresh),
+                                            label: Text('Tentar novamente'),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
@@ -148,9 +159,9 @@ class _HomeMangasViewWidgetState extends State<HomeMangasViewWidget> {
                   );
                 },
               ),
-            ),
-          );
-        }),
+            );
+          }),
+        ),
       ),
     );
   }
