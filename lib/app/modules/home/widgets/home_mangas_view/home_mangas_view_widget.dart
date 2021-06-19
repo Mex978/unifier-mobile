@@ -143,7 +143,7 @@ class _HomeMangasViewWidgetState extends State<HomeMangasViewWidget> {
                                             onTap: () => Modular.to.pushNamed(
                                               '/work',
                                               arguments: {
-                                                'type': 'manga',
+                                                'type': element?.type ?? '',
                                                 'item': element ?? WorkResult(),
                                               },
                                             ),

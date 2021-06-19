@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rx_notifier/rx_notifier.dart';
+import 'package:unifier_mobile/app/modules/home/home_controller.dart';
 import 'package:unifier_mobile/app/shared/models/chapter.dart';
 import 'package:unifier_mobile/app/shared/models/work_result.dart';
 import 'package:unifier_mobile/app/shared/utils/enums.dart';
@@ -17,6 +18,8 @@ class WorkPage extends StatefulWidget {
 }
 
 class _WorkPageState extends ModularState<WorkPage, WorkController> {
+  final homeController = Modular.get<HomeController>();
+
   late String? type = Modular.args?.data['type'];
   late WorkResult? workResult = Modular.args?.data['item'];
 
@@ -42,6 +45,23 @@ class _WorkPageState extends ModularState<WorkPage, WorkController> {
           textAlign: TextAlign.center,
           maxFontSize: 16,
         ),
+        actions: [
+          RxBuilder(
+            builder: (context) => IconButton(
+              icon:
+                  homeController.isFavorite(workResult?.id ?? '') ? Icon(Icons.favorite) : Icon(Icons.favorite_border),
+              onPressed: () {
+                final id = workResult?.id ?? '';
+
+                if (homeController.isFavorite(id)) {
+                  homeController.removeFromFavorites(id);
+                } else {
+                  homeController.addToFavorites(id);
+                }
+              },
+            ),
+          ),
+        ],
       ),
       body: RxBuilder(
         builder: (_) {

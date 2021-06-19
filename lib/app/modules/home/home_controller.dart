@@ -2,6 +2,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rx_notifier/rx_notifier.dart';
 import 'package:unifier_mobile/app/app_controller.dart';
 import 'package:unifier_mobile/app/shared/local_data/local_data.dart';
+import 'package:unifier_mobile/app/shared/models/favorites_list.dart';
 import 'package:unifier_mobile/app/shared/models/manga_list.dart';
 import 'package:unifier_mobile/app/shared/models/novel_list.dart';
 import 'package:unifier_mobile/app/shared/utils/functions.dart';
@@ -14,19 +15,26 @@ class HomeController with Disposable {
   late HomeRepository _repository;
 
   HomeController(this._repository) {
-    getMangas();
+    getFavorites();
+    getMangas(showDialog: false);
     getNovels(showDialog: false);
   }
 
   final _appController = Modular.get<AppController>();
 
+  final searchWorksField = RxNotifier<String>('');
+
   final searchMangasField = RxNotifier<String>('');
 
   final searchNovelsField = RxNotifier<String>('');
 
+  final workState = RxNotifier<RequestState>(RequestState.IDLE);
+
   final novelState = RxNotifier<RequestState>(RequestState.IDLE);
 
   final mangaState = RxNotifier<RequestState>(RequestState.IDLE);
+
+  final workResults = RxList<WorkResult>();
 
   final mangaResults = RxList<WorkResult>();
 
@@ -35,6 +43,16 @@ class HomeController with Disposable {
   final searchView = RxNotifier<bool>(true);
   final directionLocked = RxNotifier<int>(1);
   final lockSearchView = RxNotifier<bool>(false);
+
+  RxList<WorkResult?> get filteredWorkResults => searchWorksField.value.isEmpty
+      ? workResults
+      : workResults
+          .where((r) {
+            final similarityResult = Unifier.stringSimilarity(test: searchWorksField.value, target: r.title!);
+            return similarityResult;
+          })
+          .toList()
+          .asRx();
 
   RxList<WorkResult?> get filteredMangaResults => searchMangasField.value.isEmpty
       ? mangaResults
@@ -73,12 +91,54 @@ class HomeController with Disposable {
     searchView.value = newValue;
   }
 
+  changeSearcWorksField(String value) {
+    searchWorksField.value = value;
+  }
+
   changeSearchMangasField(String value) {
     searchMangasField.value = value;
   }
 
   changeSearchNovelsField(String value) {
     searchNovelsField.value = value;
+  }
+
+  bool isFavorite(String id) =>
+      workResults.firstWhere((element) => element.id == id, orElse: () => WorkResult()).id != null;
+
+  void addToFavorites(String id) async {
+    await _repository.addToFavorites(id);
+    getFavorites(showDialog: false);
+  }
+
+  void removeFromFavorites(String id) async {
+    await _repository.removeFromFavorites(id);
+    getFavorites(showDialog: false);
+  }
+
+  void getFavorites({bool showDialog = true}) {
+    Unifier.storeMethod(
+      body: () async {
+        if (showDialog) workState.value = RequestState.LOADING;
+
+        FavoritesList? result = await _repository.fetchFavorites();
+
+        FavoritesList favoritesList = result ?? FavoritesList();
+
+        workResults.clear();
+
+        favoritesList.mangas?.forEach((element) => element.type = 'manga');
+        favoritesList.novels?.forEach((element) => element.type = 'novel');
+
+        workResults.addAll(favoritesList.mangas ?? []);
+        workResults.addAll(favoritesList.novels ?? []);
+
+        workResults.sort((WorkResult a, WorkResult b) => (a.title ?? '').compareTo(b.title ?? ''));
+
+        workState.value = RequestState.SUCCESS;
+      },
+      resultState: (value) => workState.value = value,
+    );
   }
 
   void getMangas({bool showDialog = true}) {
@@ -93,6 +153,8 @@ class HomeController with Disposable {
         MangaList mangaList = result ?? MangaList();
 
         mangaResults.clear();
+
+        mangaList.results?.forEach((element) => element.type = 'manga');
 
         mangaResults.addAll(mangaList.results ?? []);
 
@@ -122,6 +184,7 @@ class HomeController with Disposable {
         NovelList novelList = result ?? NovelList();
 
         novelResults.clear();
+        novelList.results?.forEach((element) => element.type = 'novel');
         novelResults.addAll(novelList.results ?? []);
 
         while (novelList.next != null) {

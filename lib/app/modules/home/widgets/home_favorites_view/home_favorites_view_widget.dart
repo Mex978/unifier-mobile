@@ -1,34 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:rx_notifier/rx_notifier.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:unifier_mobile/app/modules/home/home_controller.dart';
-import 'package:unifier_mobile/app/shared/models/work_result.dart';
 
-import '../work_item/work_item_widget.dart';
+import 'package:unifier_mobile/app/modules/home/home_controller.dart';
+import 'package:unifier_mobile/app/modules/home/widgets/work_item/work_item_widget.dart';
+import 'package:unifier_mobile/app/shared/models/work_result.dart';
 import 'package:unifier_mobile/app/shared/utils/enums.dart';
 
-class HomeNovelsViewWidget extends StatefulWidget {
-  const HomeNovelsViewWidget({Key? key}) : super(key: key);
-
+class HomeFavoritesViewWidget extends StatefulWidget {
   @override
-  _HomeNovelsViewWidgetState createState() => _HomeNovelsViewWidgetState();
+  _HomeFavoritesViewWidgetState createState() => _HomeFavoritesViewWidgetState();
 }
 
-class _HomeNovelsViewWidgetState extends State<HomeNovelsViewWidget> {
+class _HomeFavoritesViewWidgetState extends State<HomeFavoritesViewWidget> {
   final controller = Modular.get<HomeController>();
-  late TextEditingController novelsTextController;
+  late TextEditingController worksTextController;
 
   @override
   void initState() {
     super.initState();
-    novelsTextController = TextEditingController();
+    worksTextController = TextEditingController();
   }
 
   @override
   void dispose() {
     super.dispose();
-    controller.searchNovelsField.value = '';
-    novelsTextController.dispose();
+    controller.searchWorksField.value = '';
+    worksTextController.dispose();
   }
 
   @override
@@ -36,24 +34,26 @@ class _HomeNovelsViewWidgetState extends State<HomeNovelsViewWidget> {
     return SafeArea(
       child: Scaffold(
         body: RefreshIndicator(
-          onRefresh: () async => controller.getNovels(),
-          child: RxBuilder(
-            builder: (_) {
-              final items = controller.novelResults;
-              final empty = items.isEmpty;
+          onRefresh: () async => controller.getFavorites(),
+          child: RxBuilder(builder: (_) {
+            final items = controller.workResults;
+            final empty = items.isEmpty;
 
-              return AnimatedAlign(
-                duration: Duration(milliseconds: 400),
-                curve: Curves.ease,
-                alignment: !empty ? Alignment.topCenter : Alignment.center,
-                child: OrientationBuilder(
-                  builder: (_, orientation) => Padding(
+            return AnimatedAlign(
+              duration: Duration(milliseconds: 400),
+              curve: Curves.ease,
+              alignment: !empty ? Alignment.topCenter : Alignment.center,
+              child: OrientationBuilder(
+                builder: (_, orientation) {
+                  if (orientation == Orientation.portrait) controller.changeSearchView(true, 1);
+
+                  return Padding(
                     padding: EdgeInsets.symmetric(horizontal: 8),
                     child: Listener(
-                      onPointerUp: (y) => controller.unlock(),
+                      onPointerUp: (y) {
+                        controller.unlock();
+                      },
                       onPointerMove: (moveEvent) {
-                        if (orientation == Orientation.portrait) controller.changeSearchView(true, 0);
-
                         if (orientation == Orientation.landscape) {
                           if (moveEvent.delta.dy > 0) {
                             controller.lock(1);
@@ -83,9 +83,9 @@ class _HomeNovelsViewWidgetState extends State<HomeNovelsViewWidget> {
                                             flex: 4,
                                             child: TextField(
                                               decoration: inputDecoration,
-                                              controller: novelsTextController,
+                                              controller: worksTextController,
                                               textCapitalization: TextCapitalization.words,
-                                              onChanged: controller.changeSearchNovelsField,
+                                              onChanged: controller.changeSearcWorksField,
                                             ),
                                           ),
                                           Flexible(child: SizedBox(height: 16)),
@@ -96,7 +96,7 @@ class _HomeNovelsViewWidgetState extends State<HomeNovelsViewWidget> {
                                 ),
                           RxBuilder(
                             builder: (_) {
-                              if (controller.novelState.value == RequestState.LOADING)
+                              if (controller.workState.value == RequestState.LOADING)
                                 return Expanded(
                                   child: Center(
                                     child: CircularProgressIndicator(),
@@ -112,12 +112,12 @@ class _HomeNovelsViewWidgetState extends State<HomeNovelsViewWidget> {
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           Text(
-                                            'Nenhuma novel encontrada',
+                                            'Nenhuma obra adicionada aos favoritos',
                                             textAlign: TextAlign.center,
                                           ),
                                           SizedBox(height: 16),
                                           ElevatedButton.icon(
-                                            onPressed: controller.getNovels,
+                                            onPressed: controller.getFavorites,
                                             icon: Icon(Icons.refresh),
                                             label: Text('Tentar novamente'),
                                           ),
@@ -136,7 +136,7 @@ class _HomeNovelsViewWidgetState extends State<HomeNovelsViewWidget> {
                                   crossAxisCount: axisCount,
                                   childAspectRatio: axisCount / ((axisCount * 2) + 0.2),
                                   crossAxisSpacing: 8,
-                                  children: controller.filteredNovelResults
+                                  children: controller.filteredWorkResults
                                       .map((element) => WorkItemWidget(
                                             itemsInPage: axisCount,
                                             item: element ?? WorkResult(),
@@ -156,11 +156,11 @@ class _HomeNovelsViewWidgetState extends State<HomeNovelsViewWidget> {
                         ],
                       ),
                     ),
-                  ),
-                ),
-              );
-            },
-          ),
+                  );
+                },
+              ),
+            );
+          }),
         ),
       ),
     );

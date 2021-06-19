@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:unifier_mobile/app/modules/home/widgets/home_favorites_view/home_favorites_view_widget.dart';
 import 'package:unifier_mobile/app/modules/home/widgets/home_mangas_view/home_mangas_view_widget.dart';
 
 import 'home_controller.dart';
@@ -16,7 +17,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final controller = Modular.get<HomeController>();
-  final _pageController = PageController(keepPage: true);
+  final _pageController = PageController(keepPage: true, initialPage: 1);
 
   @override
   void initState() {
@@ -29,7 +30,7 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  int selectedPage = 0;
+  int selectedPage = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +48,7 @@ class _HomePageState extends State<HomePage> {
         physics: AlwaysScrollableScrollPhysics(),
         children: [
           HomeMangasViewWidget(),
+          HomeFavoritesViewWidget(),
           HomeNovelsViewWidget(),
         ],
       ),
@@ -62,6 +64,10 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.book),
             label: 'Mangás',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: 'Favoritos',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.menu_book_rounded),

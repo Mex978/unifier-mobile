@@ -10,6 +10,7 @@ class WorkResult {
   String? cover;
   List<String>? tags;
   String? mangaUrl;
+  String? type;
 
   WorkResult(
       {this.id,
@@ -22,6 +23,7 @@ class WorkResult {
       this.status,
       this.cover,
       this.tags,
+      this.type,
       this.mangaUrl});
 
   WorkResult.fromJson(Map<String, dynamic> json) {
