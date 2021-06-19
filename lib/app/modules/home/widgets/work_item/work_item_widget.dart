@@ -9,7 +9,8 @@ class WorkItemWidget extends StatefulWidget {
   final WorkResult item;
   final Function onTap;
 
-  const WorkItemWidget({Key? key, required this.item, required this.onTap, required this.itemsInPage}) : super(key: key);
+  const WorkItemWidget({Key? key, required this.item, required this.onTap, required this.itemsInPage})
+      : super(key: key);
 
   @override
   _WorkItemWidgetState createState() => _WorkItemWidgetState();
@@ -40,6 +41,7 @@ class _WorkItemWidgetState extends State<WorkItemWidget> {
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
+                    borderRadius: BorderRadius.circular(4),
                     onTap: () {
                       Unifier.hideKeyboard(context);
                       widget.onTap();
