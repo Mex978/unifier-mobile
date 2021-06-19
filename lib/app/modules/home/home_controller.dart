@@ -163,7 +163,7 @@ class HomeController with Disposable {
           mangaResults.addAll(mangaList.results ?? []);
         }
 
-        mangaList.results?.forEach((element) => element.type = 'manga');
+        mangaResults.forEach((element) => element.type = 'manga');
         mangaResults.sort((WorkResult a, WorkResult b) => (a.title ?? '').compareTo(b.title ?? ''));
 
         mangaState.value = RequestState.SUCCESS;
@@ -192,7 +192,7 @@ class HomeController with Disposable {
           mangaResults.addAll(novelList.results ?? []);
         }
 
-        novelList.results?.forEach((element) => element.type = 'novel');
+        novelResults.forEach((element) => element.type = 'novel');
         novelResults.sort((WorkResult a, WorkResult b) => (a.title ?? '').compareTo(b.title ?? ''));
 
         novelState.value = RequestState.SUCCESS;
