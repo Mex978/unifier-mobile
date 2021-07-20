@@ -47,11 +47,32 @@ android {
         multiDexEnabled true
     }
 
+    signingConfigs {
+        file('.env').readLines().each() {
+            if (!it.isEmpty() && !it.startsWith("#")) {
+                def pos = it.indexOf("=")
+                def key = it.substring(0, pos)
+                def value = it.substring(pos + 1)
+
+                if (System.getProperty(key) == null) {
+                    System.setProperty("env.$key", value)
+                }
+            }
+        }
+
+       release {
+           storeFile file(System.getProperty("env.ANDROID_APP_SIGNING_STOREFILE"))
+           keyAlias System.getProperty("env.ANDROID_APP_SIGNING_KEYALIAS")
+           storePassword System.getProperty("env.ANDROID_APP_SIGNING_STOREPASSWORD")
+           keyPassword System.getProperty("env.ANDROID_APP_SIGNING_KEYPASSWORD")
+       }
+   }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
+            minifyEnabled false
+            shrinkResources false
         }
     }
 }

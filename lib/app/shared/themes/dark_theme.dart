@@ -15,7 +15,6 @@ ThemeData darkTheme() {
       },
     ),
     iconTheme: IconThemeData(color: secondaryColor),
-    brightness: Brightness.dark,
     fontFamily: GoogleFonts.openSans().fontFamily,
     textSelectionTheme: TextSelectionThemeData(cursorColor: accentColor),
     primarySwatch: MaterialColor(
@@ -46,6 +45,11 @@ ThemeData darkTheme() {
         primary: UnifierColors.secondaryColor,
       ),
     ),
+    colorScheme: ThemeData().colorScheme.copyWith(
+          primary: accentColor,
+          secondary: secondaryColor,
+          brightness: Brightness.dark,
+        ),
     inputDecorationTheme: InputDecorationTheme(
       enabledBorder: OutlineInputBorder(
         borderSide: BorderSide(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:unifier_mobile/app/modules/home/widgets/home_favorites_view/home_favorites_view_widget.dart';
 import 'package:unifier_mobile/app/modules/home/widgets/home_mangas_view/home_mangas_view_widget.dart';
+import 'package:unifier_mobile/app/shared/themes/colors.dart';
 
 import 'home_controller.dart';
 import 'widgets/home_drawer/home_drawer_widget.dart';
@@ -53,6 +54,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: UnifierColors.primaryColor,
         elevation: 1,
         onTap: (page) => _pageController.animateToPage(
           page,

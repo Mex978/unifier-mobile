@@ -49,41 +49,39 @@ class _MangaChapterPageState extends ModularState<MangaChapterPage, MangaChapter
 
         return Scaffold(
           appBar: controller.visibleHUDState.value ? MangaChapterAppBar(controller: controller) : null,
-          body: SafeArea(
-            child: RxBuilder(
-              builder: (_) {
-                if (controller.state.value == RequestState.LOADING)
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
+          body: RxBuilder(
+            builder: (_) {
+              if (controller.state.value == RequestState.LOADING)
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
 
-                return Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        controller.changeVisibleHUDState(!controller.visibleHUDState.value);
-                      },
-                      child: InteractiveViewer(
-                        maxScale: 5,
-                        child: ListView.builder(
-                          addAutomaticKeepAlives: true,
-                          controller: controller.scrollController,
-                          itemCount: controller.mangaChapter.value.images?.length ?? 0,
-                          itemBuilder: (context, index) => MangaPageImage(index: index),
-                        ),
+              return Stack(
+                fit: StackFit.expand,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      controller.changeVisibleHUDState(!controller.visibleHUDState.value);
+                    },
+                    child: InteractiveViewer(
+                      maxScale: 5,
+                      child: ListView.builder(
+                        addAutomaticKeepAlives: true,
+                        controller: controller.scrollController,
+                        itemCount: controller.mangaChapter.value.images?.length ?? 0,
+                        itemBuilder: (context, index) => MangaPageImage(index: index),
                       ),
                     ),
-                    ChapterBottomNavigationBarWidget(
-                      onPreviousButtonPressed: workController.sortMode.value == 0 ? previousChapter : nextChapter,
-                      onNextButtonPressed: workController.sortMode.value == 0 ? nextChapter : previousChapter,
-                      visible: controller.visibleHUDState.value,
-                      number: controller.mangaChapter.value.number ?? -1,
-                    ),
-                  ],
-                );
-              },
-            ),
+                  ),
+                  ChapterBottomNavigationBarWidget(
+                    onPreviousButtonPressed: workController.sortMode.value == 0 ? previousChapter : nextChapter,
+                    onNextButtonPressed: workController.sortMode.value == 0 ? nextChapter : previousChapter,
+                    visible: controller.visibleHUDState.value,
+                    number: controller.mangaChapter.value.number ?? -1,
+                  ),
+                ],
+              );
+            },
           ),
         );
       },

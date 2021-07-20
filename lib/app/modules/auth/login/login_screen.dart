@@ -73,22 +73,28 @@ class _LoginScreenState extends ModularState<LoginScreen, AuthController> {
                         child: CircularProgressIndicator(),
                       );
                     }
-                    return ElevatedButton(
-                      onPressed: _login,
-                      child: Text('ENTRAR'),
+                    return SizedBox(
+                      height: 56,
+                      child: ElevatedButton(
+                        onPressed: _login,
+                        child: Text('ENTRAR'),
+                      ),
                     );
                   },
                 ),
-                SizedBox(height: 8),
-                ElevatedButton(
-                  onPressed: () {
-                    Modular.to.pushNamed('register');
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: UnifierColors.tertiaryColor,
-                    onPrimary: UnifierColors.secondaryColor,
+                SizedBox(height: 16),
+                SizedBox(
+                  height: 56,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Modular.to.pushNamed('register');
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: UnifierColors.tertiaryColor,
+                      onPrimary: UnifierColors.secondaryColor,
+                    ),
+                    child: Text('CRIAR CONTA'),
                   ),
-                  child: Text('CRIAR CONTA'),
                 ),
                 SizedBox(height: 16),
               ],

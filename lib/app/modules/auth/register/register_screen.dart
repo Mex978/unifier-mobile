@@ -96,19 +96,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 SizedBox(height: 32),
                 RxBuilder(
                   builder: (context) {
-                    if (controller.stateRegister.value == RequestState.LOADING) return Center(child: CircularProgressIndicator());
+                    if (controller.stateRegister.value == RequestState.LOADING)
+                      return Center(child: CircularProgressIndicator());
 
-                    return ElevatedButton(
-                      onPressed: _register,
-                      child: Text('REGISTRAR'),
+                    return SizedBox(
+                      height: 56,
+                      child: ElevatedButton(
+                        onPressed: _register,
+                        child: Text('REGISTRAR'),
+                      ),
                     );
                   },
                 ),
-                TextButton(
-                  onPressed: () {
-                    Modular.to.pop();
-                  },
-                  child: Text('VOLTAR'),
+                SizedBox(height: 16),
+                SizedBox(
+                  height: 56,
+                  child: TextButton(
+                    onPressed: () {
+                      Modular.to.pop();
+                    },
+                    child: Text('VOLTAR'),
+                  ),
                 ),
                 SizedBox(height: 16),
               ],
